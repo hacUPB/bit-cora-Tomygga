@@ -44,5 +44,5 @@ A (Adress Register) como su nombre dice, registra direcciones, en este caso algu
 se quiere leer o escribir
 
 Basicamente para explicar como estos 3 juntos se pueden usar en la cpu, PC controla las instrucciones que deben ejecutarse de manera automatica o con instrucciones que se le 
-pueden dar, A señala la direccion de la ram para las operaciones antes descritas, algo que se vaya a leer o escribir, o guardar algun valor o constante de manera temporal, y para terminar D almacena los valores o resultados de las operaciones.
+pueden dar, A señala la direccion de la ram para las operaciones antes descritas, algo que se vaya a leer o escribir, o guardar algun valor o constante de manera temporal, y para terminar D almacena los valores o resultados de las operaciones. ss
 
