@@ -9,6 +9,10 @@ M = D
 ```
 
 ## ¿Qué hace este programa?
-Este programa pone la direccion de la memoria que esta etiquetada (VAR 1) en el registro A, luego carga
+En resumen este programa suma la var1 y la var2 para guardarlas en var3. En la primera parte del codigo, se lee el valor de var1 para guardarlo en D,
+ya en la mitad del codigo, esta misma apunta a la direccion y lee el valor de var2, para despues sumarlo con D (Valor de var1). Para finalizar
+la ultima parte del codigo guarda el resultado en la var3.
 
 ## ¿En qué posición de la memoria está var1, var2 y var3? ¿Por qué en esas posiciones?
+Cuando usamos las variables por primera vez, el ensamblador se encarga de dar la posicion de la memoria a partir del 16 en adelante, es decir, la var1
+estaría ubicada en la posición 16 de la ram, la var2 en la 17 y la var3 en la 18.
