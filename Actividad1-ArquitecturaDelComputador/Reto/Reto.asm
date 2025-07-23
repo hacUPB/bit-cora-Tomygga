@@ -43,3 +43,15 @@ D=M         //D = al contenido del valor de la ram 100
 D=D-A       // D es la resta de la ram 100 con el 100
 @20         //posicion 20 de la rom
 D;JLT       //Salto si D < 0, osea que salta si la ram 100 < 100
+
+//EJERCICIO 10
+@0          //El valor de R0 es igual a D
+D=M
+D=D+D       //Sumamos D por ella misma para que se cumpla el 2*R0
+@1  
+M=D         //En estas ultimas 2 lineas se guarda el resultado de la suma anterior en R1
+
+
+
+
+
