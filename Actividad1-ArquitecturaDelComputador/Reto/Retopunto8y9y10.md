@@ -48,7 +48,12 @@ D=M+1
 M=D
 ````
 #### ¿Que hace este programa?
+Este programa inicia suma y incrementa el contador una solo vez, en resumen suma el valor de i a sum
+una sola vez.
 #### ¿En qué parte de la memoria RAM está la variable i y sum? ¿Por qué en esas posiciones?
+i y sum estarían ubicadas en la posicion 16 y 17 de la ram, esto porque al tener unas variables declaradas y
+no se les especifica alguna direccion explicita, el ensamblador las ubica automaticamente a la posicion 16 de
+la ram en adelante.
 #### Optimiza esta parte del código para que use solo dos instrucciones:
 ```
 // i = i + 1
@@ -57,8 +62,14 @@ D=M+1
 @i
 M=D
 ```
+Optimizado sería:
+````
+// i = i + 1
+@i
+M=M+1
+````
 
-### ACTIVIDAD 10
+### RETO PUNTO 10
 Las posiciones de memoria RAM de 0 a 15 tienen los nombres simbólico R0 a R15. Escribe un programa en lenguaje ensamblador que guarde en R1 la operación 2 * R0.
 ````
 @0          //El valor de R0 es igual a D
