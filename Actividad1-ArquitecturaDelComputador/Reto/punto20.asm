@@ -1,27 +1,28 @@
-// Programa principal
-@KBD          // Dirección del teclado
-D=M           // D = contenido de KBD (última tecla presionada)
-@100          // Código ASCII de 'd'
-D=D-A         // ¿Es igual a 100? D == 0 si lo es
-@drawCall
-D;JEQ         // Si D == 0, salta a drawCall
+// Bucle principal de espera
+(LOOP)
+    @KBD        // Dirección del teclado
+    D=M         // D = tecla presionada
+    @100        // Código ASCII de 'd'
+    D=D-A       // D == 0 si se presionó 'd'
+    @DRAW       // Si D == 0 (d fue presionada), saltar a DRAW
+    D;JEQ       
+    @LOOP       // Si no, seguir esperando
+    0;JMP
 
-@LOOP
-0;JMP         // Si no es 'd', vuelve a revisar
+// Ir al código de dibujo
+(DRAW)
+    @RET        // Dirección de retorno
+    D=A
+    @R13        // Guardar la dirección de retorno en R13
+    M=D
+    @draw       // Ir a la rutina que dibuja el bitmap
+    0;JMP
 
-(drawCall)
-@drawReturn   // Guarda la dirección de retorno
-D=A
-@R13
-M=D           // R13 = return address
-@draw
-0;JMP         // Salta a rutina draw
+(RET)
+    @END
+    0;JMP
 
-(drawReturn)
-@LOOP
-0;JMP         // Regresa al loop
-
-// Aquí va tu rutina original sin cambios:
+	
 (draw)
     // put bitmap location value in R12
 	// put code return address in R13
