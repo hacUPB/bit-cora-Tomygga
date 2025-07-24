@@ -122,6 +122,6 @@ Los comentarios no se almacenan en ninguna memoria, de hecho es eliminado por el
 el lenguaje se esfuerza mas en traducir el codigo, este mismo elimina los comentarios por que no son necesarios para que el
 codigo funciona.
 #### ¿Cuál es la primera instrucción del programa anterior? ¿En qué memoria y en qué dirección de memoria está almacenada esa instrucción?
-
+Esta primera instrucción se encarga de almacenar el valor 1000 en el registro A
 #### ¿Qué son CONT y LOOP?
 #### ¿Cuál es la diferencia entre los símbolos i y CONT?
