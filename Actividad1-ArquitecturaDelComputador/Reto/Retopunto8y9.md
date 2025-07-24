@@ -57,3 +57,13 @@ D=M+1
 @i
 M=D
 ```
+
+### ACTIVIDAD 10
+Las posiciones de memoria RAM de 0 a 15 tienen los nombres simbólico R0 a R15. Escribe un programa en lenguaje ensamblador que guarde en R1 la operación 2 * R0.
+````
+@0          //El valor de R0 es igual a D
+D=M
+D=D+D       //Sumamos D por ella misma para que se cumpla el 2*R0
+@1  
+M=D         //En estas ultimas 2 lineas se guarda el resultado de la suma anterior en R1
+````
