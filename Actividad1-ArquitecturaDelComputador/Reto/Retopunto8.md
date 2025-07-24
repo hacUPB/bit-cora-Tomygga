@@ -16,3 +16,44 @@ la ultima parte del codigo guarda el resultado en la var3.
 ## ¿En qué posición de la memoria está var1, var2 y var3? ¿Por qué en esas posiciones?
 Cuando usamos las variables por primera vez, el ensamblador se encarga de dar la posicion de la memoria a partir del 16 en adelante, es decir, la var1
 estaría ubicada en la posición 16 de la ram, la var2 en la 17 y la var3 en la 18.
+
+### RETO PUNTO 9
+
+#### Consdidera el siguiente programa
+
+```
+i = 1
+sum = 0
+sum = sum + i
+i = i + 1
+```
+#### Esta es la traducción del codigo a lenguaje ensamblador
+
+```
+// i = 1
+@i
+M=1
+// sum = 0
+@sum
+M=0
+// sum = sum + i
+@i
+D=M
+@sum
+M=D+M
+// i = i + 1
+@i
+D=M+1
+@i
+M=D
+````
+#### ¿Que hace este programa?
+#### ¿En qué parte de la memoria RAM está la variable i y sum? ¿Por qué en esas posiciones?
+#### Optimiza esta parte del código para que use solo dos instrucciones:
+```
+// i = i + 1
+@i
+D=M+1
+@i
+M=D
+```
