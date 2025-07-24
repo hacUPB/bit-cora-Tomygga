@@ -68,9 +68,9 @@ M=D      // Valor de R1 guardado en R4
 Implementa en ensamblador el siguiente problema. En la posición R0 está almacenada la dirección inicial de una región de memoria. En la posición R1 está almacenado el tamaño de la región de memoria. Almacena un -1 en esa región de memoria.
 ````
 @0
-D=M        // DIRECCION INICIAL
+D=M       // DIRECCION INICIAL
 @3
-M=D       // DURECCION ACTUAL
+M=D       // DIRECCION ACTUAL
 @0
 D=M
 @2
