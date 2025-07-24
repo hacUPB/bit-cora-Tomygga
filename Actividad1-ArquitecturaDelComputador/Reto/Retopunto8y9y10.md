@@ -80,3 +80,48 @@ D=D+D       //Sumamos D por ella misma para que se cumpla el 2*R0
 @1  
 M=D         //En estas ultimas 2 lineas se guarda el resultado de la suma anterior en R1
 ````
+
+### RETO PUNTO 11
+Considera el siguiente programa
+````
+i = 1000
+LOOP:
+if (i == 0) goto CONT
+i = i - 1
+goto LOOP
+CONT:
+````
+En ensamblador
+````
+// i = 1000
+@1000
+D=A
+@i
+M=D
+(LOOP)
+// if (i == 0) goto CONT
+@i
+D=M
+@CONT
+D;JEQ
+// i = i - 1
+@i
+M=M-1
+// goto LOOP
+@LOOP
+0;JMP
+(CONT)
+````
+#### ¿Qué hace este programa?
+Este codigo comienza con i igual a 1000, para luego entrar en un bucle donde verifica si i es equivalente a 0, si lo es
+sale del bucle y si no disminuye i en 1. Basicamente entra en bucle 1000 veces para reducir i de 1000 hasta 0.
+#### ¿En qué memoria está almacenada la variable i? ¿En qué dirección de esa memoria?
+Las variables que no estan predefinidas como i se almacena automaticamente en la memoria ram, especificamente en la ram 16.
+#### ¿En qué memoria y en qué dirección de memoria está almacenado el comentario //i = 1000?
+Los comentarios no se almacenan en ninguna memoria, de hecho es eliminado por el ensamblador en tiempo de traducción ya que
+el lenguaje se esfuerza mas en traducir el codigo, este mismo elimina los comentarios por que no son necesarios para que el
+codigo funciona.
+#### ¿Cuál es la primera instrucción del programa anterior? ¿En qué memoria y en qué dirección de memoria está almacenada esa instrucción?
+
+#### ¿Qué son CONT y LOOP?
+#### ¿Cuál es la diferencia entre los símbolos i y CONT?
