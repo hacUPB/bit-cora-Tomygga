@@ -133,13 +133,13 @@ M=M+1
 (END)
 ````
 ### ¿Qué hace este programa?
-Este programa declara un arreglo de enteros de tamaño 10 llamado arr, pero como no hay un valor asignado todos los elementos son inicializados a 0 por defecto. Despues se declara la variable sum que va a almacenar la suma de los elementos del arreglo, para que en cada repeticion (este codigo tiene un bucle) se sume el valor del elemento actual del arreglo (j) a la variable sum (final del bucle).
+Este programa se encarga de sumar los primeros 10 elementos de arr y almacena el resultado en sum.
 ### ¿Cuál es la dirección base de arr en la memoria RAM?
-Como el arr esta definido implicitamente, el ensamblador lo asigno automaticamente a la direccion de la ram 18, ya que esta es la tercera variable que se menciona en el codigo.
+Como el arr esta definido implicitamente, el ensamblador lo asigno automaticamente a la direccion de la ram 16 hasta la ram 25, ya que son 10 elementos.
 ### ¿Cuál es la dirección base de sum en la memoria RAM y por qué?
-Igual que lo anterior, en este caso la variable sum estaría ubicada en la ram 16, ya que esta es la primera variable que se menciona en el codigo.
+Igual que lo anterior, en este caso la variable sum estaría ubicada en la ram 26, ya que esta es la variable libre que sigue de arr.
 ### ¿Cuál es la dirección base de j en la memoria RAM y por qué?
-Para terminar, este estaria ubicada en la posicion de ram 17, ya que es la segunda variable mencionada, en resumen ninguna variable tiene una direccion asignada, por lo que el ensamblador se las asigna automaticamente.
+Para terminar, este estaria ubicada en la posicion de ram 27 ya que esta variable libre que sigue de sum.
 
 ## PUNTO 17
 ````
