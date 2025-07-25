@@ -122,6 +122,9 @@ Los comentarios no se almacenan en ninguna memoria, de hecho es eliminado por el
 el lenguaje se esfuerza mas en traducir el codigo, este mismo elimina los comentarios por que no son necesarios para que el
 codigo funciona.
 #### ¿Cuál es la primera instrucción del programa anterior? ¿En qué memoria y en qué dirección de memoria está almacenada esa instrucción?
-Esta primera instrucción se encarga de almacenar el valor 1000 en el registro A
+Esta primera instrucción (se da desde la Ram 0) se encarga de almacenar el valor 1000 en el registro A.
 #### ¿Qué son CONT y LOOP?
+Son etiquetas, las cuales se usan como marcadores o puntos de referencia en el programa para no tener que buscar una direccion exacta. En el caso de LOOP este se usa mas para indicar el inicio
+de un bucle. y CONT marca el punto de salida del bucle. 
 #### ¿Cuál es la diferencia entre los símbolos i y CONT?
+CONT es una etiqueta almacenada en la rom que da instrucciones, i es una variable almacenada en la ram que puede almacenar datos, esa es la diferencia.
