@@ -133,7 +133,7 @@ M=M+1
 (END)
 ````
 ### ¿Qué hace este programa?
-Este programa se encarga de sumar los primeros 10 elementos de arr y almacena el resultado en sum.
+Este programa se encarga de coger los primeros 10 elementos de arr y los suma, para despues guardar el resultado de esta suma en sum.
 ### ¿Cuál es la dirección base de arr en la memoria RAM?
 Como el arr esta definido implicitamente, el ensamblador lo asigno automaticamente a la direccion de la ram 16 hasta la ram 25, ya que son 10 elementos.
 ### ¿Cuál es la dirección base de sum en la memoria RAM y por qué?
