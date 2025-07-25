@@ -15,7 +15,7 @@
     D=A
     @R13        // Guardar la dirección de retorno en R13
     M=D
-    @draw       // Ir a la rutina que dibuja el bitmap
+    @draw       // Ir a lo que dibuja el bitmap
     0;JMP
 
 (RET)
