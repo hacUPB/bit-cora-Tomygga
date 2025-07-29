@@ -1,4 +1,3 @@
-// Bucle principal de espera
 (LOOP)
     @KBD        // Dirección del teclado
     D=M         // D = tecla presionada
@@ -265,7 +264,10 @@
 	A=D-A // A=addr + val - val = addr
 	M=A-D // RAM[addr]=-val
 	// return
-	@R13
-	A=M
-	D;JMP
+	@R0
+    A=M
+    M=-1
+    @LOOP
+    0;JMP
+
 
