@@ -15,36 +15,7 @@
     D;JEQ       // Si no hay tecla presionada (D == 0), saltar a CLEAR
     @WAITD
 	0;JMP
-
-(CLEAR)
-    @SCREEN
-	D=A
-    @R0
-	M=D
-
-	@8192 
-	D=A
-	@R1
-	M=D
-
-(CLEAR_LOOP)
-    @R1
-	D=M
-	@WAITD
-	D;JEQ
-
-	@R0
-	A=M
-	M=0
-
-	@R0
-	M=M+1
-
-	@R1
-	M=M-1
-
-	@CLEAR_LOOP
-	0;JMP
+	
 
 (DRAW)
 
@@ -307,6 +278,36 @@
 	D;JMP
 	@WAITD
 	D;JMP
+
+(CLEAR)
+    @SCREEN
+	D=A
+    @R0
+	M=D
+
+	@8192 
+	D=A
+	@R1
+	M=D
+
+(CLEAR_LOOP)
+    @R1
+	D=M
+	@WAITD
+	D;JEQ
+
+	@R0
+	A=M
+	M=0
+
+	@R0
+	M=M+1
+
+	@R1
+	M=M-1
+
+	@CLEAR_LOOP
+	0;JMP
 
 (END_CLEAR)
     @LOOP
