@@ -1,3 +1,4 @@
+// Bucle principal de espera
 (LOOP)
     @KBD        // Dirección del teclado
     D=M         // D = tecla presionada
@@ -7,7 +8,44 @@
     D;JEQ       
     @LOOP       // Si no, seguir esperando
     0;JMP
-	
+    D=M         // Leer nuevamente la tecla
+    @0
+    D=D-A       // D = tecla - 0
+    @CLEAR
+    D;JEQ       // Si no hay tecla presionada (D == 0), saltar a CLEAR
+    @WAITD
+	0;JMP
+
+(CLEAR)
+    @SCREEN
+	D=A
+    @R0
+	M=D
+
+	@8192 
+	D=A
+	@R1
+	M=D
+
+(CLEAR_LOOP)
+    @R1
+	D=M
+	@WAITD
+	D;JEQ
+
+	@R0
+	A=M
+	M=0
+
+	@R0
+	M=M+1
+
+	@R1
+	M=M-1
+
+	@CLEAR_LOOP
+	0;JMP
+
 (DRAW)
 
     // put bitmap location value in R12
@@ -264,10 +302,17 @@
 	A=D-A // A=addr + val - val = addr
 	M=A-D // RAM[addr]=-val
 	// return
-	@R0
-    A=M
-    M=-1
+	@R13
+	A=M
+	D;JMP
+	@WAITD
+	D;JMP
+
+(END_CLEAR)
     @LOOP
     0;JMP
+
+
+
 
 
