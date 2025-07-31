@@ -1,21 +1,21 @@
 // Bucle principal de espera
 (LOOP)
-    @KBD        // Dirección del teclado
-    D=M         // D = tecla presionada
-    @100        // Código ASCII de 'd'
-    D=D-A       // D == 0 si se presionó 'd'
-    @DRAW       // Si D == 0 (d fue presionada), saltar a DRAW
+    @KBD        
+    D=M        
+    @100        
+    D=D-A       
+    @DRAW       
     D;JEQ       
-    @LOOP       // Si no, seguir esperando
+    @LOOP       
     0;JMP
-    D=M         // Leer nuevamente la tecla
+    D=M         
     @0
-    D=D-A       // D = tecla - 0
+    D=D-A       
     @CLEAR
-    D;JEQ       // Si no hay tecla presionada (D == 0), saltar a CLEAR
+    D;JEQ      
     @WAITD
 	0;JMP
-	
+
 
 (DRAW)
 
