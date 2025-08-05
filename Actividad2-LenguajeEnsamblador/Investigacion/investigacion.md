@@ -24,5 +24,12 @@ tecla presionada.
 LISTO :/
 
 ## ACTIVIDAD 3
+Para que esta actividad me funcione, decidi quitar la etiqueta LOOP para cambiarlo por un WAITD, con esto le digo a la maquina que en vez de que me genera un bucle
+espere la tecla D, para que haga lo que quiero, cuando presione dibuje, cuando la suelte borre, tambien me toco cambiar el codigo como lo tenia en un inicio para poder que funcionara, uno de estos cambios fue declarar @CLEAR para que el dibujo pudiera ser borrado. Aparte de todo esto, toco agregarle etiquetas como CLEAR y CLEAR_LOOP
+para que el dibujo pudiera "borrarse", ya que en realidad volvemos a los valores que muestran una pantalla en blanco.
+
+## ACTIVIDAD 4
+En el caso de la actividad 4, toco hacerle un cambio drastico al WAITD, en vez de tratar de hacer un bucle, guardamos el valor de la tecla en R3 para poder determinar
+que dibuje con la D y borre con la E, de resto, toco acomodar el codigo restante que es el que hice en el punto pasado para poder que se borre con la E y no cuando lo suelte.
 
 

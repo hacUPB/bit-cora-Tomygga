@@ -1,3 +1,19 @@
+## RETO 1
+````
+int i = 1;
+int sum = 0;
+While (i <= 100){
+   sum += i;
+   i++;
+}
+````
+### ¿Cómo están implementadas las variables i y sum?
+Como variables enteras (int)
+
+
+
+
+
 ## RETO 5
 Traducir a lenguaje ensamblador
 ````
@@ -25,5 +41,6 @@ A=M
 M=D
 ````
 ## RETO 6
+
 
 

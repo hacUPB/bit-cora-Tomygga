@@ -1,22 +1,47 @@
-// Bucle principal de espera
-(LOOP)
-    @KBD        
-    D=M        
+
+(WAITD)
+    @KBD
+    D=M         // Lee el teclado. D = valor ASCII de la tecla presionada.
+    @CLEAR       
+    D;JEQ		// Si D == 0, no hay tecla -> salta a CLEAR para borrar pantalla
     @100        
-    D=D-A       
+    D=D-A		// D = D - 100 -> compara si es la tecla 'd'
     @DRAW       
-    D;JEQ       
-    @LOOP       
-    0;JMP
-    D=M         
-    @0
-    D=D-A       
-    @CLEAR
-    D;JEQ      
+    D;JEQ		// Si D == 0, entonces era 'd' -> salta a DRAW para pintar
+
+    @WAITD      
+    0;JMP		// Si es otra tecla -> vuelve a empezar y sigue esperando
+
+(CLEAR)
+    @SCREEN
+    D=A
+    @R0
+    M=D          // Guarda en R0 la dirección inicial de pantalla (16384)
+
+    @8192
+    D=A
+    @R1
+    M=D          // R1 = 8192 -> cantidad de posiciones a limpiar (pantalla completa)
+
+(CLEAR_LOOP)
+    @R1
+    D=M
     @WAITD
-	0;JMP
+    D;JEQ        // Si contador llega a 0 -> ya terminó -> volver a esperar
 
+    @R0
+    A=M
+    M=0          // Borra la celda actual (pone el pixel en negro)
 
+    @R0
+    M=M+1        // Avanza a la siguiente dirección de pantalla
+
+    @R1
+    M=M-1        // Reduce el contador
+
+    @CLEAR_LOOP
+    0;JMP		// Repite el bucle
+	
 (DRAW)
 
     // put bitmap location value in R12
@@ -277,43 +302,6 @@
 	A=M
 	D;JMP
 	@WAITD
-	D;JMP
-
-(CLEAR)
-    @SCREEN
-	D=A
-    @R0
-	M=D
-
-	@8192 
-	D=A
-	@R1
-	M=D
-
-(CLEAR_LOOP)
-    @R1
-	D=M
-	@WAITD
-	D;JEQ
-
-	@R0
-	A=M
-	M=0
-
-	@R0
-	M=M+1
-
-	@R1
-	M=M-1
-
-	@CLEAR_LOOP
-	0;JMP
-
-(END_CLEAR)
-    @LOOP
     0;JMP
 
-
-
-
-
+	
