@@ -22,7 +22,7 @@ el ciclo termina para continuar con el resto del programa.
 Esta variable se implementa o ejecuta a traves de su direccion de memoria para que el compilador pueda gestionar este espacio cuando se ejecuta la función que contiene a i.
 
 ###  ¿En qué parte de la memoria se almacena la variable i?
-Al estar dentro de una funcion como main() esta variable se guarda en la pila de ejecución.
+Al estar dentro de una funcion como main() esta variable se guarda en el stack.
 
 ### Después de todo lo que has hecho, ¿Qué es entonces una variable?
 Es un nombre simbolico que se usa para referirse a una ubicación de la memoria donde se almacena un dato durante la ejecución del programa-
@@ -44,6 +44,9 @@ for (int i = 1; i <= 100; i++)
 ````
 
 ## RETO 3
+Escribe un programa en lenguaje ensamblador que implemente el programa anterior.
+
+
 
 
 
