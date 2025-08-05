@@ -141,8 +141,6 @@ D=A
 A=M
 M=D
 ````
-
-
 ## RETO 6
 
 ## RETO 7
@@ -178,6 +176,18 @@ D=M    // D = *p_var
 @R14
 M=D    // bis = *p_var
 ````
+## RETO 8
+### ¿Qué hace esto int *pvar;?
+Declara un puntero a entero llamado pvar.
 
+### ¿Qué hace esto pvar = var;?
+No hace nada creo, que yo me acuerde en los codigos anteriores no estaba copiado asi exactamente, falta el & en el var, osea quedaria pvar = &var.
 
+### ¿Qué hace esto var2 = *pvar?
+Asigna el valor de var2 al contenido que apunta pvar.
+
+### ¿Qué hace esto pvar = &var3?
+Me imagino que asigna a pvar el valor o la direccion de memoria de var3.
+
+## RETO 9
 
