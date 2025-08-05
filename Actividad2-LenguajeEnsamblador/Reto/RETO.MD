@@ -15,6 +15,35 @@ Al estar ubicadas en la memoria ram, y no parecen tener una dirección ya establ
 la RAM[17].
 
 ### ¿Cómo está implementado el ciclo while?
+El ciclo while, esta implementado como un ensamblador que evaluan si i <= 1000, si es verdadera, ejecutan { sum += i; i++; } donde luego saltan a reevaluar la condición y si es falsa
+el ciclo termina para continuar con el resto del programa.
+
+### ¿Cómo se implementa la variable i?
+Esta variable se implementa o ejecuta a traves de su direccion de memoria para que el compilador pueda gestionar este espacio cuando se ejecuta la función que contiene a i.
+
+###  ¿En qué parte de la memoria se almacena la variable i?
+Al estar dentro de una funcion como main() esta variable se guarda en la pila de ejecución.
+
+### Después de todo lo que has hecho, ¿Qué es entonces una variable?
+Es un nombre simbolico que se usa para referirse a una ubicación de la memoria donde se almacena un dato durante la ejecución del programa-
+
+### ¿Qué es la dirección de una variable?
+Es La posición en memoria RAM donde se encuentra almacenado el valor de la variable.
+
+### ¿Qué es el contenido de una variable?
+Es el valor almacenado en la dirección de memoria de la variable.
+
+## RETO 2
+Transforma el programa en alto nivel anterior para que utilice un ciclo for en vez de un ciclo while.
+````
+int sum = 0;
+for (int i = 1; i <= 100; i++)
+{
+    sum += i;
+}
+````
+
+## RETO 3
 
 
 
