@@ -17,6 +17,7 @@ tecla presionada.
 
 ### Inventa un programa que haga uso de la entrada-salida mapeada a memoria.
 
+
 ### Investiga el funcionamiento del programa con el simulador.
 
 ## ACTIVIDAD 2

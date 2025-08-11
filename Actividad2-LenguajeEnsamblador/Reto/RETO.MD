@@ -178,25 +178,20 @@ Traducido
 ````
 @10
 D=A
-@R13
+@var
 M=D
 
 @5
 D=A
-@R14
+@bis
 M=D
 
-// p_var = &var;     (dirección de var = R13)
-@R13
+@var
 D=A
-@R15
+@pvar
 M=D
-
-@R15
-A=M    // A = contenido de R15, o sea, dirección de var
-D=M    // D = *p_var
-@R14
-M=D    // bis = *p_var
+@bis
+M=D    
 ````
 ## RETO 8
 ### ¿Qué hace esto int *pvar;?
@@ -213,7 +208,7 @@ Me imagino que asigna a pvar el valor o la direccion de memoria de var3.
 
 ## RETO 9
 Considera que el punto de entrada del siguiente programa es la función main, es decir, el programa inicia llamando la función main. Vas a proponer una posible traducción a lenguaje ensamblador de la función suma, cómo llamar a suma y cómo regresar a std::cout << "El valor de c es: " << c << std::endl; una vez suma termine.
-
+### RAE1
 ````
 #include <iostream>
 
@@ -229,6 +224,30 @@ int main() {
    return 0;
 }
 ````
+#### TRADUCIDO
+````
+@6
+D=A
+@9
+D=D+A
+@var
+M=D
+@var
+D=M
+@SCREEN
+M=D
+(END)
+@END
+0;JMP
+````
+#### RAE2
+El codigo fue probado en nand2tetris. suma de igual manera el 6 y el 9 solo que este lo hace con registros en vez de usar una consola.
+
+![alt text](image-3.png)
+
+![alt text](image-4.png)
+
+
 
 
 

@@ -20,15 +20,13 @@
     @R2
     D=D-M
     @END
-    D;JGT   // Si i > 100, saltar a END
-
-    // sum = sum + i
+    D;JGT   
+    
     @R0
     D=M
     @R1
     M=D+M
 
-    // i++
     @R0
     M=M+1
 
@@ -37,4 +35,4 @@
 
 (END)
     @END
-    0;JMP   // Bucle infinito para detener
+    0;JMP   
