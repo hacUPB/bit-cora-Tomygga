@@ -1,9 +1,8 @@
 ## RETO 1
-### RAE1
 ````
 int i = 1;
 int sum = 0;
-while (i <= 100){
+While (i <= 100){
    sum += i;
    i++;
 }
@@ -130,7 +129,6 @@ Con el operador &. p = &a;
 Con el operador . p = 20;. En este caso como p contiene la dirección de a entonces p a la izquierda del igual indica que quieres actualizar el valor de la variable a.
 
 ## RETO 5
-### RAE1
 Traducir a lenguaje ensamblador
 ````
 int a = 10;
