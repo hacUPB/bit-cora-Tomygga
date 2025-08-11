@@ -16,9 +16,38 @@ donde cada fila se representa mediante 32 palabras consecutivas de 16 bits. El t
 tecla presionada.
 
 ### Inventa un programa que haga uso de la entrada-salida mapeada a memoria.
+Este programa es una version menor de lo del dibujo del ejercicio pasado, lo que esto hace es que pinta los primeros 16 pixeles de la pantalla cuando se presiona una tecla
+y cuando lo suelto se borra. Es simple y parecido a lo que nos va a tocar hacer en los siguientes puntos, pero considero que esta bien.
+````
+(START)
+    @24576     
+    D=M        
 
+    @START
+    D;JEQ
+
+    @16384
+    D=-1
+    M=D
+
+(WAIT_RELEASE)
+    @24576
+    D=M
+    @WAIT_RELEASE
+    D;JNE     
+    
+    @16384
+    D=0
+    M=D
+
+    @START
+    0;JMP
+````    
 
 ### Investiga el funcionamiento del programa con el simulador.
+Aca hay un breve video viendo como funciona el codigo, efectivamente, presiono le tecla D y se dibujan los primeros 16 pixeles, aunque son muy pequeños me toco hacer zoom para que se
+viera mejor.
+<video controls src="VID_20250811_154305.mp4" title="Title"></video>
 
 ## ACTIVIDAD 2
 

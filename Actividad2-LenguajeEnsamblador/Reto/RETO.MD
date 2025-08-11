@@ -40,6 +40,8 @@ no fue necesario probar el codigo por partes, ya que al ser tan corto podriamos 
 
 ![alt text](image.png)
 
+![alt text](image-5.png)
+
 ## RETO 2
 ### RAE1
 Transforma el programa en alto nivel anterior para que utilice un ciclo for en vez de un ciclo while.
