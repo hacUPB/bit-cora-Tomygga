@@ -399,6 +399,14 @@ Los cuales son atributos privados y estos mismos son los que se encargan de alma
 Los punteros se inicializan en el setup(), donde se crean dinamicamente objetos de tipo sphere y almacenar las direcciones en el vector spheres. aunque tambien esta la parte del nullptr, el cual se encarga de que al iniciar el codigo no se seleccione ningun puntero para poder seleccionarlo al dar click.
 
 #### ¿Para qué se está usando el puntero?
+Los punteros (sphere*) se usan para manejar dinamicamente objetos de la clase sphere, es decir, se crean las spheres en el setup y se guardan en el vector. El puntero en vez de guardar copias completas de las esferas, guarda las direcciones a los datos de esta (x, y, radius). Mientras que el puntero selectedSphere sirve para referenciar una esfera cuando le damos clic.
+
+#### ¿Qué es exactamente lo que está almacenado en el puntero?
+La dirección de memoria de cada una de las esferas que se generan (x, y, radius), mientras que el selected sphere apunta a uno de estos mismos objetos.
+
+## ACTIVIDAD 6
+
+
 
 
 
