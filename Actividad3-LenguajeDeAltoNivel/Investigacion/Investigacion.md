@@ -406,6 +406,288 @@ La dirección de memoria de cada una de las esferas que se generan (x, y, radius
 
 ## ACTIVIDAD 6
 
+<video controls src=" 2025-08-21 08-10-31.mp4" title="Title"></video>
+
+ El error es que cuando yo selecciono una esfera, no puedo soltarla de una en cualquier parte. Tengo que buscar una esfera mas grande para poder cambiar la selección de la esfera. Esto se debe a que los punteros guardan la información de las esferas que ya fueron generadas, y por el vector spehereSelected que es quiem permite la selección de las esferas en base a sus datos.
+
+Decidi, agregarle un mouseReleased para poder corregir este problema, cuando suelte el clic, la esfera se deja de seleccionar y queda a donde la llevaste con el mouse. Aparte tuve que hacerle el siguiente atributo para que funcionara lo de agarrar la esfera y soltarlo cuando sea:
+
+```c++
+
+    // En OFAPP.h
+    void mouseReleased(int x, int y, int button);
+
+    // ATRIBUTO BOOL PARA PODER QUE FUNCIONE :/
+    bool estaAgarrando = false;
+
+    void ofApp::mouseReleased(int x, int y, int button) 
+    
+    if (button == OF_MOUSE_BUTTON_LEFT) {
+        estaAgarrando = false;
+        selectedSphere = nullptr;
+    }
+```
+
+CODIGOS CORREGIDOS COMPLETOS
+
+OFAPP.h
+
+```c++
+#pragma once
+
+#include "ofMain.h"
+
+
+class Sphere {
+public:
+    Sphere(float x, float y, float radius);
+    void draw();
+    void update(float x, float y);
+    float getX();
+    float getY();
+    float getRadius();
+
+private:
+    float x, y;
+    float radius;
+    ofColor color;
+};
+
+class ofApp : public ofBaseApp {
+
+public:
+    void setup();
+    void update();
+    void draw();
+
+    void mouseMoved(int x, int y);
+    void mousePressed(int x, int y, int button);
+    void mouseReleased(int x, int y, int button);
+
+private:
+
+    vector<Sphere*> spheres;
+    Sphere* selectedSphere;
+};
+```
+
+OFAPP.cpp
+```c++
+#include "ofApp.h"
+
+Sphere::Sphere(float x, float y, float radius) : x(x), y(y), radius(radius) {
+    color = ofColor(ofRandom(255), ofRandom(255), ofRandom(255));
+}
+
+bool estaAgarrando = false;
+
+void Sphere::draw() {
+    ofSetColor(color);
+    ofDrawCircle(x, y, radius);
+}
+
+void Sphere::update(float x, float y) {
+    this->x = x;
+    this->y = y;
+}
+
+float Sphere::getRadius() {
+    return radius;
+}
+
+float Sphere::getX() {
+    return x;
+}
+
+float Sphere::getY() {
+    return y;
+}
+
+//--------------------------------------------------------------
+void ofApp::setup() {
+    ofBackground(0);
+
+    for (int i = 0; i < 5; i++) {
+        float x = ofRandomWidth();
+        float y = ofRandomHeight();
+        float radius = ofRandom(20, 50);
+        spheres.push_back(new Sphere(x, y, radius));
+    }
+    selectedSphere = nullptr;
+
+}
+
+//--------------------------------------------------------------
+void ofApp::update() {
+    if (estaAgarrando && selectedSphere != nullptr) {
+        selectedSphere->update(ofGetMouseX(), ofGetMouseY());
+    }
+}
+
+
+//--------------------------------------------------------------
+void ofApp::draw() {
+    for (auto sphere : spheres) {
+        sphere->draw();
+    }
+}
+
+
+//--------------------------------------------------------------
+void ofApp::mouseMoved(int x, int y) {
+
+}
+
+//--------------------------------------------------------------
+void ofApp::mousePressed(int x, int y, int button) {
+    if (button == OF_MOUSE_BUTTON_LEFT) {
+        for (auto sphere : spheres) {
+            float distance = ofDist(x, y, sphere->getX(), sphere->getY());
+            if (distance < sphere->getRadius()) {
+                selectedSphere = sphere;
+                estaAgarrando = true;
+                return;
+            }
+        }
+        selectedSphere = nullptr;
+        estaAgarrando = false;
+    }
+
+    
+}
+
+void ofApp::mouseReleased(int x, int y, int button) {
+    if (button == OF_MOUSE_BUTTON_LEFT) {
+        estaAgarrando = false;
+        selectedSphere = nullptr;
+    }
+}
+```
+Prueba de que funciona:
+
+<video controls src=" 2025-08-21 08-30-12.mp4" title="Title"></video>
+
+## ACTIVIDAD 7
+
+OFAPP.h
+```c++
+#pragma once
+
+#include "ofMain.h"
+
+class Sphere {
+public:
+    Sphere(float x, float y, float radius);
+    void draw() const;
+
+    float x, y;
+    float radius;
+    ofColor color;
+};
+
+class ofApp : public ofBaseApp {
+public:
+    void setup();
+    void update();
+    void draw();
+
+    void keyPressed(int key);
+
+private:
+    std::vector<Sphere*> globalVector;
+    void createObjectInStack();
+};
+```
+OFAPP.cpp
+```c++
+#include "ofApp.h"
+
+Sphere::Sphere(float x, float y, float radius) : x(x), y(y), radius(radius) {
+    color = ofColor(ofRandom(255), ofRandom(255), ofRandom(255));
+}
+
+void Sphere::draw() const {
+    ofSetColor(color);
+    ofDrawCircle(x, y, radius);
+}
+
+void ofApp::setup() {
+    ofBackground(0);
+}
+
+void ofApp::update() {
+}
+
+void ofApp::draw() {
+    ofSetColor(255);
+    for (Sphere* sphere : globalVector) {
+        if (sphere != nullptr) {
+            ofDrawBitmapString("Objects pointed: " + ofToString(globalVector.size()), 20, 20);
+            ofDrawBitmapString("Attempting to draw stored object...", 20, 40);
+            ofDrawBitmapString("Stored Object Position: " + ofToString(sphere->x) + ", " + ofToString(sphere->y), 20, 60);
+            sphere->draw();
+        }
+    }
+}
+
+void ofApp::keyPressed(int key) {
+    if (key == 'c') {
+        if (globalVector.empty()) {
+            createObjectInStack();
+        }
+    }
+    else if (key == 'd') {
+        if (!globalVector.empty()) {
+            ofLog() << "Accessing object in global vector: Position (" << globalVector[0]->x << ", " << globalVector[0]->y << ")";
+        }
+        else {
+            ofLog() << "No objects in the global vector.";
+        }
+    }
+}
+
+void ofApp::createObjectInStack() {
+    Sphere localSphere(ofRandomWidth(), ofRandomHeight(), 30);
+    globalVector.push_back(&localSphere);
+    ofLog() << "Object created in stack: Position (" << localSphere.x << ", " << localSphere.y << ")";
+    localSphere.draw();
+}
+```
+### ¿Qué sucede cuando presionas la tecla “c”?
+
+![alt text](image.png)
+
+Cuando presiono la tecla C, se ejecuta el metodo createObjectInStack(), que crea un objeto sphere en el stack llamado localSPhere, agrega la direccion a globalVector y guarda un puntero, dibuja el objeto y luego termina la función. Lo que pasa es que cuando presionamos la tecla C, Este mismo objeto se crea y se elimina, ya que esta creado en la pila stack y no en heap, sin embargo, el puntero guardo la información global de este objeto asi este destruido, por lo que aparecen esas posiciones tan extrañas al ejecutar y presionar la C.
+
+### CORRECIÓN DEL CODIGO
+
+```c++
+void ofApp::createObjectInStack() {
+    // Sphere localSphere(ofRandomWidth(), ofRandomHeight(), 30);
+    // globalVector.push_back(&localSphere);
+    // ofLog() << "Object created in stack: Position (" << localSphere.x << ", " << localSphere.y << ")";
+    // localSphere.draw();
+    Sphere* heapSphere = new Sphere(ofRandomWidth(), ofRandomHeight(), 30);
+    globalVector.push_back(heapSphere);
+    ofLog() << "Object created in heap: Position (" << heapSphere->x << ", " << heapSphere->y << ")";
+    heapSphere->draw();
+}
+```
+
+### ¿Qué sucede cuando presionas la tecla “c”?
+
+![alt text](image-1.png)
+
+Basicamente lo mismo que con el anterior, pero con la gran diferencia de que al usar el heap en vez del stack, si se dibuja el objeto, si se guarda el puntero en globalVector con una dirección normal y el objeto no se elimina, sigue existiendo.
+
+### ¿Por qué ocurre esto?
+
+Porque ahora estamos usando el heap, una asignación dinamica de memoria. Esto hace que cuando creamos el objeto no se destruya al salir de la función, sino que quede de alguna manera "vivo" en el heap y el puntero guarda la dirección de la esfera que no fue eliminada.
+
+## ACTIVIDAD 8
+
+
+
 
 
 
