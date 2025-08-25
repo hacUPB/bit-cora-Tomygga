@@ -687,6 +687,30 @@ Porque ahora estamos usando el heap, una asignación dinamica de memoria. Esto h
 ## ACTIVIDAD 8
 
 
+## ACTIVIDAD 9
+
+### ¿Qué sucede cuando presionas la tecla “f”?
+
+Cuando doy click, se genera un circulo que aparece donde tengo el cursor, mas o menos asi:
+
+![alt text](image-2.png)
+
+Ahora cuando presiono la tecla "f", esta borra el circulo mas reciente, para hacer la carita feliz lo primero que dibuje fueron los ojos, por ende si le doy seis veces a la "f", la sonrisa va a desaparecer, quedando asi: 
+
+![alt text](image-3.png)
+
+En resumen, cuando se presiona la tecla f esta ejecuta una acción que elimina el circulo mas reciente.
+
+###     Analiza detalladamente esta parte del código:
+
+```cpp
+if(!heapObjects.empty()) {
+    delete heapObjects.back();
+    heapObjects.pop_back();
+}
+```
+Basicamente, el if verifica que el vector no este vacio, pero si este mismo contiene un puntero guardado, lo elimina para liberar memoria y termina con quitar el puntero del vector, para eso sirven esas tres lineas de codigo.
+
 
 
 
