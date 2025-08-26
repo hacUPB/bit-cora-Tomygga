@@ -685,7 +685,157 @@ Basicamente lo mismo que con el anterior, pero con la gran diferencia de que al 
 Porque ahora estamos usando el heap, una asignación dinamica de memoria. Esto hace que cuando creamos el objeto no se destruya al salir de la función, sino que quede de alguna manera "vivo" en el heap y el puntero guarda la dirección de la esfera que no fue eliminada.
 
 ## ACTIVIDAD 8
+Construye un experimento (un programa) en el que puedas crear y dibujar objetos que se almacenan:
 
+- En el `heap`.
+- En el `stack`.
+- En memoria global.
+
+### OFAPP.H
+
+```cpp
+#pragma once
+#include "ofMain.h"
+
+class Sphere {
+public:
+    Sphere(float x = 0, float y = 0, float radius = 10);
+
+    void draw() const;
+    void setPosition(float x, float y);
+    bool contains(int px, int py) const;
+
+    void setColor(const ofColor& c);
+
+    float getX() const { return x; }
+    float getY() const { return y; }
+    float getRadius() const { return radius; }
+
+private:
+    float x, y;
+    float radius;
+    ofColor color;
+};
+
+extern Sphere globalSphere;
+
+class ofApp : public ofBaseApp {
+public:
+    void setup() override;
+    void update() override;
+    void draw() override;
+
+    void mousePressed(int x, int y, int button) override;
+    void mouseDragged(int x, int y, int button) override;
+    void mouseReleased(int x, int y, int button) override;
+
+    ~ofApp(); 
+
+private:
+    std::vector<Sphere*> heapSpheres;
+    
+    Sphere stackSphere;
+    Sphere* selected = nullptr;
+    bool dragging = false;
+};
+```
+### OFAPP.CPP
+
+```cpp
+#include "ofApp.h"
+
+Sphere globalSphere(100, 100, 40);
+
+Sphere::Sphere(float x, float y, float radius)
+    : x(x), y(y), radius(radius), color(ofColor::white) {}
+
+void Sphere::draw() const {
+    ofSetColor(color);
+    ofDrawCircle(x, y, radius);
+}
+
+void Sphere::setPosition(float nx, float ny) {
+    x = nx; y = ny;
+}
+
+bool Sphere::contains(int px, int py) const {
+    return ofDist(px, py, x, y) <= radius;
+}
+
+void Sphere::setColor(const ofColor& c) { color = c; }
+
+void ofApp::setup() {
+    ofBackground(0);
+    ofSetCircleResolution(64);
+
+    heapSpheres.push_back(new Sphere(200, 200, 30));
+    heapSpheres.push_back(new Sphere(300, 200, 30));
+    heapSpheres.push_back(new Sphere(200, 300, 30));
+    for (auto* s : heapSpheres) s->setColor(ofColor::blue);
+
+    stackSphere = Sphere(420, 300, 55);
+    stackSphere.setColor(ofColor::green);
+
+    globalSphere.setColor(ofColor::red);
+
+    selected = nullptr;
+    dragging = false;
+}
+
+void ofApp::update() {
+    
+}
+
+void ofApp::draw() {
+    for (auto* s : heapSpheres) s->draw(); 
+    stackSphere.draw();                     
+    globalSphere.draw();                    
+
+    ofSetColor(255);
+    ofDrawBitmapString("Heap: Esferas azules", 20, 20);
+    ofDrawBitmapString("Stack: Esfera verde (centro-derecha)", 20, 40);
+    ofDrawBitmapString("Global: Esfera roja (arriba-izq)", 20, 60);
+}
+
+void ofApp::mousePressed(int x, int y, int button) {
+    if (button != OF_MOUSE_BUTTON_LEFT) return;
+
+    for (auto* s : heapSpheres) {
+        if (s->contains(x, y)) { selected = s; dragging = true; return; }
+    }
+    if (stackSphere.contains(x, y)) { selected = &stackSphere; dragging = true; return; }
+    if (globalSphere.contains(x, y)) { selected = &globalSphere; dragging = true; return; }
+
+    selected = nullptr;
+    dragging = false;
+}
+
+void ofApp::mouseDragged(int x, int y, int button) {
+    if (dragging && selected) selected->setPosition(x, y);
+}
+
+void ofApp::mouseReleased(int x, int y, int button) {
+    if (button != OF_MOUSE_BUTTON_LEFT) return;
+    dragging = false;
+    selected = nullptr;
+}
+
+ofApp::~ofApp() {
+    for (auto* s : heapSpheres) delete s;
+    heapSpheres.clear();
+}
+```
+### RESULTADO DE EJECUTARLO
+
+![alt text](image-4.png)
+
+- En el heap se crean las esferas azules
+- En el stack la verde (no se borra hasta que se aplique el delete)
+- en el global la roja
+
+### ¿Cuándo debo crear objetos en el heap y cuándo en memoria global?
+
+Debemos crear objetos en memoria GLOBAL cuando estos mismos objetos se usen en todo el programa, es decir, los objetos de esta memoria permancen si o si cuando el programa se ejecuta, en cambio. La memoria heap se usa para crear objetos en una clase o función, que se crea con new y se borra con delete, es decir, la vida de este objeto depende de nosotros. Mejor dicho, para la memoria global se podrian crear objetos constantes durante toda la ejecución del programa, mientras que el heap, se usa para algunas clases o funciones, donde se crean y se borran dependiendo del tiempo que queramos usar
 
 ## ACTIVIDAD 9
 
