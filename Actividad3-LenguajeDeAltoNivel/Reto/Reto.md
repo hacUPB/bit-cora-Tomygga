@@ -77,6 +77,7 @@ void ofApp::draw() {
 	cam.end();
 
 	ofSetColor(255);
+	ofDrawBitmapString("FPS: " + ofToString(ofGetFrameRate()), 20, 20);
 	ofDrawBitmapString("Step (x,y): " + ofToString(xStep) + ", " + ofToString(yStep), 20, 40);
 	ofDrawBitmapString("distDiv: " + ofToString(distDiv), 20, 60);
 	ofDrawBitmapString("Amplitud: " + ofToString(amplitud), 20, 80);
