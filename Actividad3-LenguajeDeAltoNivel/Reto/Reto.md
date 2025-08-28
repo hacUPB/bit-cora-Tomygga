@@ -210,3 +210,11 @@ Y en donde cada uno de estos tienen estos parametros guardados tambien:
 
 Basicamente aca se automatizan los procesos para que no toque hacer un uso manual de new o delete en el heap.
 
+### Heap
+
+
+
+
+## VIDEO DEMOSTRATIVO DEL FUNCIONAMIENTO DEL PROGRAMA
+
+<video controls src=" 2025-08-28 08-31-31.mp4" title="Title"></video>
