@@ -212,9 +212,7 @@ Y en donde cada uno de estos tienen estos parametros guardados tambien:
 Basicamente aca se automatizan los procesos para que no toque hacer un uso manual de new o delete en el heap.
 
 ### Heap
-
-
-
+Aqui no se realizan asignaciones en new o delete, pero hay vectores que se manejan de forma dinamica como el spherePositions, donde utilizan cada vez el heap para gestionar la memoria, cada vez que se usa el spherePositions.push_back se reserva la memoria dinamica para almacenar un nuevo vector glm:vec3, y cuando se limpia, el vector libera esa memoria. Esta misma se usa para que no tengamos que liberar memoria manualmente.
 
 ## VIDEO DEMOSTRATIVO DEL FUNCIONAMIENTO DEL PROGRAMA
 
