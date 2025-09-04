@@ -166,3 +166,48 @@ Esto permite que los nodos se "encadenen" de una forma dinamica en la memoria, s
 
 ### ¿Cómo se gestiona la memoria en una lista enlazada? Investiga cómo se crea y se destruye un nodo en memoria utilizando el operador new y delete en C++.
 
+La memoria en una lista enlazada se gestiona manualmente con el opreador NEW para crear nodos dinamicamente en el heap y el operador DELETE liberar esa memoria cuando los nodos ya no son necesarios. Cada vez que se agrega un nodo, se utiliza el new para asignar la memoria y el delete para evitar fugas.
+
+### Considerando la estructura de una lista enlazada, ¿qué ventajas ofrece en comparación con un arreglo cuando se trata de insertar o eliminar elementos en posiciones intermedias?
+
+Una lista enlazada permite insertar o eliminar elementoss en posiciones intermedias de una manera mas eficiente que un arreglo, ya que este mismo no requiere mover el resto de los elementos, solo necesita los punteros de los nodos que tienen un costo mas constante que los arreglos
+
+### En el código presentado, ¿Cómo se asegura que no haya fugas de memoria? ¿Qué papel juega el destructor en la clase LinkedList?
+
+Con el metodo Clear(), este recorre la lista enlazada y libera la memoria de cada nodo usando delete. El LinkedList llama a este metodo automaticamente cuando un objeto del mismo tipo de esta clase es destruido, Así, el destructor garantiza que toda la memoria dinámica utilizada por los nodos se libere correctamente cuando la lista deje de existir, evitando pérdidas de memoria
+
+```cpp
+LinkedList::~LinkedList() {
+    clear();  // Libera todos los nodos al destruir la lista
+}
+-------------------------------
+
+void LinkedList::clear() {
+    Node* current = head;
+    while (current != nullptr) {
+        Node* nextNode = current->next;
+        delete current;        // Libera la memoria del nodo actual
+        current = nextNode;    // Avanza al siguiente nodo
+    }
+    head = nullptr;
+    tail = nullptr;
+    size = 0;
+}
+
+```
+### ¿Qué sucede en la memoria cuando se invoca el método clear() en una lista enlazada? Explica paso a paso cómo se liberan los recursos.
+
+Proceso del medtodo clear en la LinkedList:
+
+- Se crea un puntero temporal current que apunta al primer nodo  de la lista.
+
+- Mientras current no sea nullptr, este mismo guarda en otro puntero nextNode la dirección del siguiente nodo, llama a delete current, Invoca el destructor del nodo actual, Libera la memoria dinámica ocupada por ese nodo en el heap, Se actualiza current para que apunte al nodo siguiente.
+
+- Cuando current llega a nullptr, significa que todos los nodos han sido liberados.
+
+- Se actualizan los punteros head y tail a nullptr, y el tamaño size a 0, indicando que la lista está vacía.
+
+### Explica cómo cambia la estructura en memoria de una lista enlazada al agregar un nuevo nodo al final de la lista. ¿Cómo afecta esto al rendimiento de la lista enlazada?
+
+Al agregar un nodo al final de la lista, se crea de manera dinamica en la memoria un nuevo nodo y el puntero del nodo final se actualiza para apuntar al nodo recien creado, manteniendo la conexion de la lista. Esto permite que la operacion de insercion se realice a tiempo constante. ya que no es necesario que recorra la lista completa, mejorando asi el rendimiento en comparacion con listas que no mantienen un puntero al ultimo nodo.
+    
