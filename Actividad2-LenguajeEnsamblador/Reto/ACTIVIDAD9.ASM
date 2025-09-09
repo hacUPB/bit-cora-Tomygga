@@ -1,0 +1,13 @@
+@6
+D=A
+@9
+D=D+A
+@var
+M=D
+@var
+D=M
+@SCREEN
+M=D
+(END)
+@END
+0;JMP
