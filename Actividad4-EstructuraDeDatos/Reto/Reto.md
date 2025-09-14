@@ -330,7 +330,7 @@ Y al probar esto sale lo siguiente:
 
 <video controls src="20250914-0552-20.9437264.mp4" title="Title"></video>
 
-En resumen, funciona bien, aunque podria mejorar.
+En resumen, funciona bien, aunque podria mejorar en ciertos aspectos, pero lo veo bien asi :D.
 
 
 
