@@ -295,6 +295,7 @@ Asi cuando presiono la tecla S
 ![alt text](image-4.png)
 
 Asi cuando presiono la tecla W (se borran los ultimos rayos generados)
+
 ![alt text](image-5.png)
 
 Y cuando presiono la tecla D cambia de color, en la foto voy a poner todos los colores que hay que son azul, morado, blanco y naranja
