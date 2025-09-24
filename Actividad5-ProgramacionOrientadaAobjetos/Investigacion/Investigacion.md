@@ -502,17 +502,98 @@ Los punteros a métodos miembro suelen usarse como variables (no suelen estar em
 ### REFLEXION INDIVIDUAL
 
 #### ¿Dónde residen los datos y métodos de una clase en la memoria?
-Datos miembros (variables): en la instancia, que puede estar en stack, heap o segmento de datos estáticos (dependiendo de cómo se cree el objeto).
-
-Métodos (funciones): en el segmento de código (text segment).
-
-Puntero vptr (si hay métodos virtuales): dentro de cada instancia, apunta a vtable en segmento read-only.
-
-vtable: en el segmento de código o read-only, compartida por todas las instancias de la clase.
+Los datos miembros (variables) pueden estar en el stack, heap o en el segmento de datos estaticos, ya que esto depende de como se cree el objeto. Los meotodos se guardan en el segmento de codigo (text segment), el puntero vptr solo se guarda si hay metodos virtuales dentro de cada instancia, apunta a vtable en el segmento de read only, mientras que los vtable se quedan en el segmento de codigo o en el read only, compartida por todas las instancias de la clase.
 
 #### ¿Cómo interactúan las diferentes partes en tiempo de ejecución?
+Cuando se llema a un metodo depende, ya que si es estatico o libre el puntero se usa directamente para ir a la funcion, si el metodo no es virtual, se llama con this implicito, y si es virtual, el puntero vptr se usa para buscar la funcion correcta en la vtable, los punteros a funciones o metodos pueden almacenar las direcciones para invocar funciones dinamicamente.
 
 #### Conclusión: cómo esta comprensión afecta el diseño de sistemas.
+
+- Saber que métodos virtuales añaden una pequeña sobrecarga ayuda a decidir cuándo usar polimorfismo.
+
+- Entender la diferencia entre punteros a funciones y métodos ayuda en diseños con callbacks o eventos.
+
+- Optimizar los tamaños de objetos y el uso de memoria es crítico en sistemas embebidos o de alto rendimiento.
+
+- Diseñar interfaces claras para minimizar indireccionamientos y mejorar el caché.
+
+## Sesión 3: implementación Interna de Encapsulamiento, Herencia y Polimorfismo
+### Profundizando en el encapsulamiento
+Crear una clase con diferentes niveles de acceso:
+```cpp
+class AccessControl {
+private:
+    int privateVar;
+protected:
+    int protectedVar;
+public:
+    int publicVar;
+    AccessControl() : privateVar(1), protectedVar(2), publicVar(3) {}
+};
+```
+Intentar acceder a los miembros desde una función externa:
+```cpp
+int main() {
+    AccessControl ac;
+    ac.publicVar = 10; // Válido
+    // ac.protectedVar = 20; // Error de compilación
+    // ac.privateVar = 30; // Error de compilación
+    return 0;
+}
+```
+#### ¿Cómo implementa el compilador el encapsulamiento en C++? Si los miembros privados aún ocupan espacio en el objeto, ¿Qué impide que se acceda a ellos desde fuera de la clase?
+
+¿Cómo implementa el compilador el encapsulamiento en C++?
+
+En C++, el encapsulamiento se basa principalmente en el control de acceso a los miembros de una clase (public, protected, private).
+
+Los miembros privados y protegidos sí forman parte del objeto y ocupan espacio en memoria.
+
+Sin embargo, el acceso a esos miembros está controlado en tiempo de compilación: el compilador verifica que solo el código autorizado pueda acceder a ellos.
+
+En tiempo de ejecución, no hay ningún mecanismo especial que evite acceder a esos miembros (es decir, no hay "guardias" o "protecciones" a nivel de memoria).
+
+¿Por qué no se puede acceder a los miembros privados desde fuera de la clase, si están en memoria?
+
+La restricción es en tiempo de compilación. El compilador solo permite acceder a los miembros privados desde funciones o métodos que tengan permiso (normalmente, métodos de la clase o amigos).
+
+Si intentas acceder a un miembro privado desde fuera, el código no compilará (error de acceso).
+
+Pero, en memoria, esos miembros privados están ahí, como parte del objeto. No hay ninguna barrera física en tiempo de ejecución.
+
+¿Entonces qué impide el acceso no autorizado?
+
+El compilador es el que impide el acceso no autorizado. Si se rompe esa regla, el código no compila.
+
+Por ejemplo:
+```cpp
+class A {
+private:
+    int x;
+public:
+    A(int v) : x(v) {}
+    int getX() { return x; }
+};
+
+int main() {
+    A a(10);
+    // a.x = 5; // Esto no compila, error: 'x' es privado.
+    int val = a.getX(); // Correcto, acceso autorizado.
+}
+```
+
+Aunque el miembro x esté en memoria, la línea a.x = 5; no compilará porque el compilador lo impide.
+
+¿Se puede acceder a esos miembros privados de otra forma?
+
+Con trucos de punteros, manipulación de memoria, o técnicas como casting con punteros crudos, sí es posible acceder a esos miembros en tiempo de ejecución, porque no hay protección física en memoria.
+
+Sin embargo, hacerlo es no estándar y peligroso, y rompe las reglas de encapsulamiento a nivel lógico.
+
+### Hagamos un poco de hackers y rompamos el encapsulamiento
+
+#### ¿Qué es el encapsulamiento y cuál es su propósito en la programación orientada a objetos?
+
 
 
 
