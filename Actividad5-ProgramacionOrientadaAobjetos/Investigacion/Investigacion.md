@@ -279,6 +279,8 @@ De instancia (dinámica)	✅ Sí	❌ No
 ### REFLEXION
 
 #### ¿Qué es un objeto desde la perspectiva de la memoria?
+Desde la perspectiva de memoria, un objeto es un bloque de memoria que contiene los datos definidos por su clase. representa en la memoria una instancia concreta: sus atributos que ocupan espacio y los metodos que son funciones compartidas que no se copian dentro de cada objeto. Mejor dicho, cada instancia tiene sus propios atributos que no son estaticos.
 
-Un objeto es una estructura que ocupa un espacio en la memoria para almacenar sis atributos (estado) y tener acceso a sus metodos. Especificamente el 
+#### ¿Cómo influyen los atributos y métodos en el tamaño y estructura del objeto?
 
+Esto depende de los tipos de atributos, como por ejemplo los estaticos que no ocupan un espacio adicional en el objeto, porque este se almacena en una zona de memoria en comun para toda la clase o programa, mientras los atributos normales por asi decirlo, son los que determinan directamente el tamaño del objeto, ya que se almacenan generalmente de forma contigua en la memoria y pueden incluir relleno para respetar la alineacion. Los metodos no afectan al tamño del objeto, el compilador genera las funciones una vez y los objetos saben a que codigo apuntar.
