@@ -541,7 +541,7 @@ int main() {
     return 0;
 }
 ```
-#### ¿Cómo implementa el compilador el encapsulamiento en C++? Si los miembros privados aún ocupan espacio en el objeto, ¿Qué impide que se acceda a ellos desde fuera de la clase?
+#### Segun chatgppt: ¿Cómo implementa el compilador el encapsulamiento en C++? Si los miembros privados aún ocupan espacio en el objeto, ¿Qué impide que se acceda a ellos desde fuera de la clase?
 
 ¿Cómo implementa el compilador el encapsulamiento en C++?
 
@@ -612,6 +612,202 @@ Puede tener un comportamiento indefinido donde el programa falle, corrompa memor
 
 #### ¿Qué implicaciones tiene este experimento sobre la confianza en las barreras de encapsulamiento que proporciona C++?
 El encapsulamiento es una convencion impuesta por el compilador, no una barrera en tiempo de ejecucion, aparte c++ no ofrece aislamiento total y el programador tiene la responsabilidad de respetar el diseño orientado a objetos y no abusar de herramientas de bajo nivel. No significa que el encapsulamiento sea inutil, mas bien c++ confia mas en que el programador actue de manera responsable.
+
+### Herencia y la Relación en Memoria
+
+Crear clases con herencia:
+
+```cpp
+class Base {
+public:
+    int baseVar;
+};
+class Derived : public Base {
+public:
+    int derivedVar;
+};
+```
+Analizar las direcciones de memoria:
+```cpp
+Derived d;
+std::cout << "Dirección de d: " << &d << std::endl;
+std::cout << "Dirección de d.baseVar: " << &(d.baseVar) << std::endl;
+std::cout << "Dirección de d.derivedVar: " << &(d.derivedVar) << std::endl;
+```
+
+#### ¿Cómo se organizan los atributos en memoria?
+Cuando creamos un objeto derivado, su layout en memoria incluye primero los miembros de la clase base y luego los de la clase derivada. Es decir el objeto derived d en la memoria se ve mas como una concatenacion, por lo tanto, la direccion de &d coincide con la direccion del primer miembro de la clase base, y el derivedVar estara en una direccion desplazada respecto al inicio del objeto, justo despues de baseVar. Digamos que en lo anterioe, si int ocupa cuatro bytes, la derivada estara 4 bytes despues.
+
+#### ¿Qué sucede si agregamos más niveles de herencia?
+
+Cuando agregamos mas clases heredadas, el layout sigue la misma regla: Cada clase derivada incluye secuencialmente el bloque de datos de su clase base, seguido de sus propios atributos. Aunque, esto es solo cuando la herencia es simple, ya cuando es una herencia multiple, el layout se complica donde cada sub-objeto vase ocupa su propio bloque en memoria, y el compilador debe organizar los desplazamientos. Tambien si hay clases con funciones virtuales, aparece el vptr que normalmente se almacena al inicio del objeto (antes de los atributos)
+
+### Segun chatgpt: explícame cómo se organiza en memoria un objeto de una clase derivada en C++. ¿Cómo se almacenan los atributos de la clase base y de la derivada?
+
+1. Caso sin herencia (clase normal)
+Si tienes una clase:
+```cpp
+class Base {
+public:
+    int a;
+    double b;
+};
+```
+
+Un objeto Base obj; en memoria contiene directamente sus atributos, en el orden en que fueron declarados (aunque el compilador puede insertar padding para alinear datos).
+Ejemplo (supongamos 64 bits y que int=4, double=8):
+```cpp
+obj:
+| int a (4B) | padding (4B) | double b (8B) |
+````
+2. Caso con herencia simple
+Si tienes:
+```cpp
+class Base {
+public:
+    int baseVar;
+};
+
+class Derived : public Base {
+public:
+    int derivedVar;
+};
+```
+Cuando creas un objeto Derived d;, en memoria se organiza como:
+```cpp
+d:
+| baseVar (de Base) | derivedVar (de Derived) |
+```
+Los atributos de la clase base se colocan primero, como si fueran un bloque al inicio del objeto.
+Después, siguen los atributos de la clase derivada.
+Todo sigue estando sujeto a padding y alineación.
+
+Ejemplo:
+Base tiene un int (4B), Derived también tiene un int (4B).
+En memoria (simplificado):
+```cpp
+d:
+[ baseVar:4B ] [ derivedVar:4B ]
+```
+
+Tamaño total: 8 bytes (aunque puede redondearse según alineación).
+
+3. Herencia múltiple
+Si tienes:
+```cpp
+class Base1 {
+public:
+    int x;
+};
+
+class Base2 {
+public:
+    double y;
+};
+
+class Derived : public Base1, public Base2 {
+public:
+    char z;
+};
+
+```
+En memoria, un Derived tiene dos sub-objetos base, uno para cada clase base:
+```
+d:
+| Base1::x (4B) | padding (4B) |
+| Base2::y (8B) |
+| Derived::z (1B) | padding (...) |
+```
+El compilador garantiza que cada subobjeto base está alineado correctamente.
+
+4. Herencia con funciones virtuales
+
+Cuando hay métodos virtuales, el compilador suele añadir un puntero oculto llamado vptr (puntero a la tabla virtual de funciones).
+Ejemplo:
+```cpp
+class Base {
+public:
+    virtual void f() {}
+    int a;
+};
+
+class Derived : public Base {
+public:
+    int b;
+};
+```
+
+En memoria, un Derived d; podría verse así:
+```cpp
+d:
+| vptr (8B en 64 bits) |
+| Base::a (4B) + padding |
+| Derived::b (4B)       |
+````
+
+El vptr apunta a la vtable de la clase correspondiente.
+
+Resumen
+
+- Los atributos de la base van primero, en orden de declaración.
+
+- Luego los atributos de la clase derivada.
+
+- En herencia múltiple, cada clase base tiene su “bloque” dentro del objeto.
+
+- Si hay funciones virtuales, aparece un puntero oculto (vptr).
+
+- El compilador puede insertar padding para mantener alineación.
+
+### Polimorfismo y Vtables en detalle
+
+Crear una jerarquía polimórfica:
+```cpp
+class Animal {
+public:
+    virtual void makeSound() {
+        std::cout << "Some generic sound" << std::endl;
+    }
+};
+class Dog : public Animal {
+public:
+    void makeSound() override {
+        std::cout << "Bark" << std::endl;
+    }
+};
+class Cat : public Animal {
+public:
+    void makeSound() override {
+        std::cout << "Meow" << std::endl;
+    }
+};
+```
+Usar punteros de la clase base:
+```cpp
+Animal* animals[] = { new Dog(), new Cat() };
+for (Animal* animal : animals) {
+    animal->makeSound();
+}
+```
+#### Analizar con un depurador: observa cómo se resuelven las llamadas a makeSound() en tiempo de ejecución.
+<img width="2008" height="1270" alt="image" src="https://github.com/user-attachments/assets/a1fb0555-5027-428d-9bd4-d38d1ea7b7b8" />
+
+En el código, cuando se crea el array animals, se está diciendo que ese array puede guardar cualquier cosa que sea un Animal, ya sea un perro o un gato. Lo interesante es que el for no se preocupa si el objeto es un perro o un gato. Simplemente sabe que tiene que llamar a la función makeSound(). Pero como esa función fue marcada como virtual en la clase Animal, el programa, cuando se está ejecutando, mira al objeto que primero piensa que es un perro y usa  makeSound() que dice 'Bark'". Y en la siguiente vuelta, hace lo mismo con el gato, usa makeSound() que dice 'Meow'".
+
+####  ¿Cómo utiliza el programa las vtables para el polimorfismo?
+Cuando declaramos un metodo como virtual, el compilador genera una tabla de punteros a funciones virtuales, o mejor dicho, vtables para esa clase donde acada objeto que tenga metodos virtuales, guarda el ya famoso vptr que apunta a la vtable correspondiente a su tipo dinamico.
+
+#### ¿Cuál es el impacto en el rendimiento?
+
+El costo adicional es muy minimo ya que accede al vptr del objeto y hace un salto indirecto a la direccion de la funcion guardada en la vtable. Esto añade una direccion extra comparado con una llamada normal a funcion. Como tal el mayor costo esta en que las llamadas virtuales no pueden ser alineaadas facilmente por el compilador, lo que puede limitar optimizaciones de rendimiento en un codigo con bastantes llamadas, ya en la memoria, cada clase polimorfica mantiene una vtable y cada objeto polimorfico guarda un unico vptr, por lo que el rendimiento no se ve tan afectado.
+
+### REFLEXION INDIVIDUAL
+
+#### ¿Cómo se implementan internamente el encapsulamiento, la herencia y el polimorfismo?
+
+#### Análisis: ventajas y desventajas en términos de eficiencia y complejidad.
+
+
 
 
 
