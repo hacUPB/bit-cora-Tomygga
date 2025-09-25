@@ -593,6 +593,25 @@ Sin embargo, hacerlo es no estándar y peligroso, y rompe las reglas de encapsul
 ### Hagamos un poco de hackers y rompamos el encapsulamiento
 
 #### ¿Qué es el encapsulamiento y cuál es su propósito en la programación orientada a objetos?
+El encapsulamiento consiste en ocultar los detalles internos de una clase y restringir el acceso directo a sus datos internos (atributos), esto porque se usan modificadores de acceso como private, protected y public
+
+#### ¿Por qué es importante proteger los datos de una clase y restringir el acceso desde fuera de la misma?
+Proteger los datos sirve para evitar errores accidentales como cambios indebidos al estado interno del objeto, aumenta la mantenibilidad y la seguridad del codigo y fomenta la abstraccion, lo que permite que la implementacion interna cambie sin afectar a los usuarios de la clase. Restringir el acceso asegura que las reglas de la aplicacion o cosas que no se puedan cambiar se respeten, aparte tambien asegura que los errores sean mas faciles de detectar y depurar.
+
+#### ¿Qué significa reinterpret_cast y cómo afecta la seguridad del programa?
+Es una herramienta de conversion de tipo de bajo nivel, que permite tratar a un bloque de memoria de un tipo como si fuera de otro completamente distinto, sin cambiar los bits de este. 
+
+Aunque suene maravilloso, hay muchos riesgos al usarlo, como que rompe la garantia del sistema de tipos de c++, tambien puede causar comportamientos indefinidos si se usan incorrectamente y violan el encapsulamiento como en este caso, tambien puede introducir errores dificiles de rastrear, basicamente es un arma de doble filo, o la usas bien o te complicas la vida usandola.
+
+#### ¿Por qué crees que se pudo acceder a los miembros privados de MyClass en este experimento, a pesar de que el compilador normalmente lo impediría?
+Porque el compilador impone restricciones de acceso a nivel de lenguaje, pero no cambia la representacion en memoria del objeto. En tiempo de ejecucion todos los datos del objeto estan en memoria de forma contigua, usando punteros es posible leer esa memoria directamente, ignorando completamente la visibilidad de los miembros. Esto funciona porque la visibilidad no afecta la disposicion en memoria, solo controla el acceso en tiempo de compilacion.
+
+#### ¿Cuáles podrían ser las consecuencias de utilizar técnicas como las mostradas en este experimento en un programa real?
+
+Puede tener un comportamiento indefinido donde el programa falle, corrompa memoria o producir malos resultados, tambien puede funcionar en un compilador o plataforma, pero fallar en otra, osea que tiene poca portabilidad. Aparte de esto, tambien tiene un mantenimiento muy dificil ya que el codigo es fragil y dificil de entender, y por ultimo, se pueden explotar vulneraciones si se abusa del acceso a memoria arbitraria.
+
+#### ¿Qué implicaciones tiene este experimento sobre la confianza en las barreras de encapsulamiento que proporciona C++?
+El encapsulamiento es una convencion impuesta por el compilador, no una barrera en tiempo de ejecucion, aparte c++ no ofrece aislamiento total y el programador tiene la responsabilidad de respetar el diseño orientado a objetos y no abusar de herramientas de bajo nivel. No significa que el encapsulamiento sea inutil, mas bien c++ confia mas en que el programador actue de manera responsable.
 
 
 
