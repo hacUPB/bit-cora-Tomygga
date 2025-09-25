@@ -541,6 +541,9 @@ int main() {
     return 0;
 }
 ```
+
+<img width="488" height="883" alt="image" src="https://github.com/user-attachments/assets/3f4ba976-7868-4718-b8be-c1b121a9b630" />
+
 #### Segun chatgppt: ¿Cómo implementa el compilador el encapsulamiento en C++? Si los miembros privados aún ocupan espacio en el objeto, ¿Qué impide que se acceda a ellos desde fuera de la clase?
 
 ¿Cómo implementa el compilador el encapsulamiento en C++?
@@ -634,6 +637,8 @@ std::cout << "Dirección de d: " << &d << std::endl;
 std::cout << "Dirección de d.baseVar: " << &(d.baseVar) << std::endl;
 std::cout << "Dirección de d.derivedVar: " << &(d.derivedVar) << std::endl;
 ```
+<img width="764" height="890" alt="image" src="https://github.com/user-attachments/assets/d7eb884c-75d1-468d-a4f7-fde3588fe66b" />
+
 
 #### ¿Cómo se organizan los atributos en memoria?
 Cuando creamos un objeto derivado, su layout en memoria incluye primero los miembros de la clase base y luego los de la clase derivada. Es decir el objeto derived d en la memoria se ve mas como una concatenacion, por lo tanto, la direccion de &d coincide con la direccion del primer miembro de la clase base, y el derivedVar estara en una direccion desplazada respecto al inicio del objeto, justo despues de baseVar. Digamos que en lo anterioe, si int ocupa cuatro bytes, la derivada estara 4 bytes despues.
@@ -804,8 +809,14 @@ El costo adicional es muy minimo ya que accede al vptr del objeto y hace un salt
 ### REFLEXION INDIVIDUAL
 
 #### ¿Cómo se implementan internamente el encapsulamiento, la herencia y el polimorfismo?
+El encapsulamiento restringe el acceso directo a los atributos y metodos d euna clase, se implementa con los modificadores de acceso como private o public, los atributos privados suelen manipularse con los metodos get y set. 
+
+La herencia permite que una clase herede atribtuos y metodos de otra, donde internamente el compilador crea una estructura como de jeraquia en las clases, se accede a esto mediante desplazamientos de memoria que uno debe conocer al usar esto
+
+Para finalizar, el polimorfismo permite que objetos de otras clases se traten como objetos de una clase comun, en c++ se hace con vtables por lo que estructuras como esta generan un puntero oculto donde las llamadas de los virtuales se resuelven dinamicamente
 
 #### Análisis: ventajas y desventajas en términos de eficiencia y complejidad.
+Las ventajas de esto son muy altas aunque tambien peligrosas, por ejemplo en el caso del encapsulamiento este protege los datos y facilita mas las validaciones. Pero en casos como en el de la herencia donde aparte de que se puede reutilizar codigo y facilitar extender un codigo, este es mas complejo de hacer ya que depende de que tipo de herencia queramos hacer. Aunque el que yo creo que es el peor caso es el del polimorfismo, que facilida pruebas y permite un diseño mas simple, pero es dificil de rastrear en ejecucion y esto lleva a que complique lo demas.
 
 
 
