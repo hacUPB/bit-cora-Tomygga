@@ -401,3 +401,35 @@ void ofApp::exit() {
 
 ## ¿COMO SE APLICARON AL FINAL LOS CONCEPTOS EN COMPARACIÓN A LOS QUE DIJE EN UN INICIO?
 
+En el caso de la herencia, esta se aplico usando una clase padre que llame ObjetoEspacial, que tiene de hijos a Planeta, Nebulosa y Estrella fugaz. Ya que estas clases comparten los atributos que se heredan de la clase padre, como tamaño, posicion, color y metodos como update y draw. 
+
+En el caso del polimorfismo, hice que el metodo update y draw funcione de igual manera para todos los objetos, gracias  a un vector del puntero de ObjetoEspacial.
+
+```cpp
+vector<ObjetoEspacial*> objetos;
+
+for (auto& obj : objetos) {
+    obj->update(dt);  
+    obj->draw();      
+}
+
+```
+Al recorrer el vector en objetos, se invoca el metodo correcto dependiendo del tipo real del objeto, lo que permite tratar todos los objetos especiales de una manera uniforme, aunque con un comportamiento especifico.
+
+En el caso del encapsulamiento, lo use en la clase padre para proteger sus atributos y dejar publicos sus metodos, para a traves de estos modificar o consultar valores, lo que mantiene los datos internos seguros y controlados para que no surjan errores.
+
+Ya el manejo de memoria, uso new para crear objetos de tipo ObjetoEspacial   y sus derivadas para meterlos en el heap, donde implemente un exit para liberar la memoria con delete, logrando evitar fugas de memoria. Aparte, las estrellas fugaces se reutilizan, ya que al morir se llama al metodo estaMuerta y genera nuevas estrellas fugaces.
+
+```cpp
+objetos.push_back(new Planeta(...));
+objetos.push_back(new EstrellaFugaz(...));
+
+for (auto& obj : objetos) {
+    delete obj;
+}
+objetos.clear();
+```
+
+Eso seria todo
+
+![alt text](image-4.png)
