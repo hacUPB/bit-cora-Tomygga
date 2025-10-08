@@ -643,6 +643,6 @@ Agregue un nuevo tipo llamado cometa que acompaña ya a los tres anteriores tipo
 
 #### VIDEO DEL FUNCIONAMIENTO DE LOS CAMBIOS
 
-<video controls src=" 2025-10-08 11-14-30.mp4" title="Title"></video>
+<video controls src="20251008-1616-49.2982768.mp4" title="Title"></video>
 
 
