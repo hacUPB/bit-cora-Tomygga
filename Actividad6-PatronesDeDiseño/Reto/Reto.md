@@ -1,5 +1,72 @@
+# RETO
+
+## CONSTRUCCIÓN DE LA APLICACIÓN
+
+La idea es hacer un fondo interactivo, donde se muestre un paisaje y al presionar teclas se cambie el tiempo o clima en el que este, digamos que hay un paisaje inicial soleado y que cambie a uno lluvioso, o nocturno, o un amanecer no se, como sea, esa es la idea de la aplicación como tal. La cual necesita hacer uso de los patrones de diseño que vimos en clase, asi que eso es todo.
+
+### PRIMER AVANCE
+
+<video controls src="20251011-0351-24.4150053.mp4" title="Title"></video>
+
+En este ponemos a funcionar el cambio de paisajes por asi decirlo, esto es un demo.
+
+### SEGUNDO AVANCE
+
+<video controls src="20251011-0353-46.5745372.mp4" title="Title"></video>
+
+En este es donde ponemos a funcionar el patron factory para que genere los objetos como el sol, las nubes, gotas de lluvia y estrellas, esto tambien demuestra la prueba del funcionamiento del patron factory.
+
+### TERCER AVANCE
+
+<video controls src="20251011-0356-34.6539975.mp4" title="Title"></video>
+
+Aqui quise matar dos pajaros de un solo tiro, en el anterior, se generaba el sol solo cuando presionaba el 1 asi este en el aisaje soleado, por eso fue donde aqui implementamos el patron Observer y State, para que un observador siempre este pendiente de cuando cambio de paisaje y lo notifique al state para poder cambiar de clima, en codigo se vería masomenos asi:
+
+```cpp
+void Subject::addObserver(Observer* o) { observers.push_back(o); }
+void Subject::removeObserver(Observer* o) {
+    observers.erase(std::remove(observers.begin(), observers.end(), o), observers.end());
+}
+void Subject::notify(const std::string& event) {
+    for (auto o : observers) o->onNotify(event);
+}
+
+oid SolState::onEnter(std::vector<ClimaElement*>& elements) {
+    elements.clear();
+    elements.push_back(WeatherFactory::createElement("Sol"));
+}
+void SolState::draw(const std::vector<ClimaElement*>& elements) {
+    ofBackground(255, 250, 180);
+    for (auto e : elements) e->draw();
+}
+void SolState::onNotify(const std::string& event) {
+    if (event == "state2") app->setCurrentState(app->lluviaStateObj);
+    else if (event == "state3") app->setCurrentState(app->nocheStateObj);
+}
+```
+
+Asi fue como probe estos patrones finales que me faltaban, para ahora si, pasar a la pagina final.
+
+## VIDEO DEMOSTRATIVO DE LA APP FINAL
+
+<video controls src="20251011-0401-44.8453788.mp4" title="Title"></video>
+
+Al final le agregue montañitas y aumente el numero de nubes estrellas para que no se sintiera tan vacio el paisaje
+
+### ¿COMO SE USAN LOS PATRONES DE DISEÑO?
+
+El patrón Factory se usa para crear objetos sin necesidad de especificar exactamente qué tipo de objeto se va a crear. En lugar de escribir código que diga crea un sol o crea una gota en todas partes, se usa una clase especial (en este caso WeatherFactory) que tiene un método (createElement) encargado de decidir qué objeto crear según el nombre que se le pase. Así, si se pide “Nube”, la fábrica devuelve una nube; si se pide sol, devuelve un sol.
 
 
+El patrón Observer sirve para que ciertos objetos (observers) estén pendientes de lo que hace otro objeto principal (llamado sujeto). Cuando algo cambia en el sujeto, este avisa a todos los observadores. En este código, la clase ofApp actúa como el sujeto, y los estados (SolState, lluviaState, NocheState) son los observadores. Cuando el usuario presiona una tecla, ofApp notifica un evento, y los observadores reaccionan cambiando el estado del clima.
+
+El patrón State permite que un objeto cambie su comportamiento según su estado actual. El clima puede estar en diferentes estados: sol, lluvia o noche. 
+
+Cada uno de estos estados tiene su propia clase (SolState, lluviaState, NocheState) que define qué elementos se crean, cómo se dibujan y qué pasa al cambiar de estado. Gracias a este patrón, el código no necesita tener un montón de condicionales como si está lloviendo haz esto, si hay sol haz lo otro; simplemente cambia de estado, y cada estado sabe cómo comportarse por sí mismo.
+
+## CODIGO FUENTE APP
+
+### OFAPP.CPP
 ```cpp
 #include "ofApp.h"
 #include <algorithm>
@@ -265,6 +332,8 @@ void NocheState::onNotify(const std::string& event) {
 }
 
 ```
+
+### OFAPP.H
 ```cpp
 #pragma once
 
