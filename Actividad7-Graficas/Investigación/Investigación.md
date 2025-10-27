@@ -59,6 +59,51 @@ La GPU debe ser rápida y trabajar en paralelo porque necesita procesar millones
 Cumplen su proposito de dar a entender como funciona una GPU y CPU, pero de igual manera los videos de aprendizaje son en su mayoría aburridos, asi que no.
 
 ## ACTIVIDAD 2
+### Con la modificación del codigo
+![alt text](image.png)
+
+Este mo funciona porque no llama a las funciones que inician y finalizan el shader
+### Codigo original sin modificar
+
+![alt text](image-1.png)
+
+### ¿Cómo funciona?
+
+El programa carga un shader (un pequeño programa que corre en la tarjeta gráfica) y lo aplica a un rectángulo que ocupa toda la pantalla. Básicamente, el shader se encarga de decirle a la computadora cómo dibujar cada punto (pixel) del rectángulo, usando código especial para la GPU.
+
+### ¿Qué resultados obtuviste?
+
+Depende del shader que esté en la carpeta shadersGL3/shader.
+Por ejemplo, puede mostrar colores, degradados o efectos visuales (como distorsión o movimiento).
+En este caso, el resultado visual lo decide el código del shader, no el de ofApp.cpp.
+
+### ¿Estás usando un vertex shader?
+
+Sí, el shader completo normalmente tiene dos partes: un vertex shader y un fragment shader.
+El vertex shader se encarga de manejar los vértices (las esquinas del rectángulo que se dibuja) y preparar la información que se pasa al fragment shader.
+
+###  ¿Estás usando un fragment shader?
+
+El fragment shader es el que decide el color de cada pixel del rectángulo.
+Ahí es donde se crean los efectos visuales (luces, sombras, colores, texturas, etc.). Osea, si hay.
+
+### Analiza el código de los shaders. ¿Qué hace cada uno?
+
+#### SHADER.VERT
+
+```cpp
+OF_GLSL_SHADER_HEADER
+
+uniform mat4 modelViewProjectionMatrix;
+
+in vec4 position;
+
+void main(){
+	gl_Position = modelViewProjectionMatrix * position;
+}
+
+```
+
 
 ## ACTIVIDAD 3
 
