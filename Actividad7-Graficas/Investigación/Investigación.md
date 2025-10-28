@@ -353,3 +353,161 @@ void main()
 }
 ```
 # ACTIVIDAD 4
+
+### ¿Cómo funciona el código de aplicación, los shaders y cómo se comunican estos? (IGUAL PARA LOS EJEMPLOS SIGUIENTES)
+
+El código de aplicación se encarga de controlar la lógica del programa, como cargar las imágenes, texturas y enviar información a los shaders. Los shaders son el vertex shader que controla la forma y posición de los objetos, y el fragment shader se encarga del color de cada píxel. Ambos se comunican con el código mediante los uniforms, por ejemplo, texturas o valores numéricos. Así, el código principal da los datos y los shaders crean los efectos visuales en pantalla.
+
+##  SEPTIMO EJEMPLO
+
+![alt text](image-10.png)
+
+![alt text](image-11.png)
+
+
+### modificación ejemplo
+
+![alt text](image-12.png)
+
+En el ofapp.cpp le agregue esto:
+
+```cpp
+brushSize = ofMap(ofGetMouseX(), 0, ofGetWidth(), 30, 200, true);
+```
+el pincel cambia su tamaño dinamicamente segun la posición del ratón
+
+```cpp
+OF_GLSL_SHADER_HEADER
+
+uniform float uUseTextures;
+uniform vec2 uMaskSize;
+uniform vec2 uTexSize;
+uniform sampler2D maskTex;
+
+uniform sampler2D tex0;
+uniform sampler2D tex1;
+uniform sampler2D tex2;
+uniform sampler2D tex3;
+uniform sampler2D tex4;
+
+uniform float time;
+
+in vec2 texCoordVarying;
+out vec4 outputColor;
+
+void main() {
+    bool bUseTextures = uUseTextures > 0.5 ? true : false;
+
+    // Obtenemos el valor de la máscara
+    float mask = texture(maskTex, texCoordVarying).r;
+
+    // Calculamos coordenadas de textura
+    vec2 st = vec2(texCoordVarying.x / uMaskSize.x * uTexSize.x,
+                   texCoordVarying.y / uMaskSize.y * uTexSize.y);
+
+    vec4 colorFinal;
+
+    // Si usamos texturas, mezclamos entre ellas con movimiento senoidal
+    if (bUseTextures) {
+        vec4 t0 = texture(tex0, st + vec2(sin(time * 0.2) * 0.01, cos(time * 0.3) * 0.01));
+        vec4 t1 = texture(tex1, st + vec2(cos(time * 0.1) * 0.02, sin(time * 0.25) * 0.02));
+        vec4 mixTex = mix(t0, t1, mask);
+        colorFinal = mixTex;
+    } else {
+        // Colores vivos que cambian con el tiempo y la posición
+        vec3 dynamicColor = vec3(
+            sin(time + texCoordVarying.x * 5.0) * 0.5 + 0.5,
+            cos(time + texCoordVarying.y * 5.0) * 0.5 + 0.5,
+            sin(time * 0.8 + texCoordVarying.x * 3.0) * 0.5 + 0.5
+        );
+        colorFinal = vec4(dynamicColor, 1.0);
+    }
+
+    // Agregamos un brillo pulsante en función del tiempo y la máscara
+    float pulse = sin(time * 2.0 + mask * 6.28) * 0.5 + 0.5;
+    colorFinal.rgb *= mix(0.8, 1.5, pulse);
+
+    outputColor = colorFinal;
+}
+```
+## OCTAVO EJEMPLO
+
+![alt text](image-13.png)
+
+### MODIFICACIONES AL CODIGO
+
+![alt text](image-14.png)
+
+En el ofapp.cpp cambie que el movimiento fuera vertical y con el teclado (Flecha arriba, Flecha abajo), y se le agrego una animación como tipo ola.
+
+En el vertex shader se hizo lo del movimiento en ves de Y a Z, se combino el movimiento con ondas senoidales y se añadio un uniform de desplazamiento dinamico.
+
+En el fragment shader se colorea por la altura, se añade un efecto tipo heatmap y tambien se le agrega un brillo animado por tiempo
+
+### SHADER FRAG
+```cpp
+
+#version 150
+
+uniform sampler2D tex0;
+uniform float uTime;
+
+in vec2 texCoordVarying;
+in float vHeight;
+
+out vec4 outputColor;
+
+void main()
+{
+    // mezcla azul y turquesa según la altura
+    vec3 deepColor = vec3(0.0, 0.2, 0.6);
+    vec3 shallowColor = vec3(0.0, 0.8, 1.0);
+
+    float wave = 0.5 + 0.5 * sin(uTime + vHeight * 10.0);
+    vec3 color = mix(deepColor, shallowColor, vHeight * 1.2) + wave * 0.05;
+
+    outputColor = vec4(color, 1.0);
+}
+
+```
+
+### SHADER VERT
+
+```cpp
+#version 150
+
+uniform mat4 modelViewProjectionMatrix;
+in vec4 position;
+in vec2 texcoord;
+
+uniform sampler2D tex0;
+uniform float uDisplacementScale;
+uniform float uTime;
+
+out vec2 texCoordVarying;
+out float vHeight;
+
+void main()
+{
+    float height = texture(tex0, texcoord).r;
+
+    // combinación de ruido y seno para efecto de ola
+    float wave = sin((position.x + uTime * 2.0) * 0.01) * 0.5 + 0.5;
+    float displacement = (height * 0.7 + wave * 0.3) * uDisplacementScale;
+
+    vec4 modifiedPosition = position;
+    modifiedPosition.y += displacement;
+
+    gl_Position = modelViewProjectionMatrix * modifiedPosition;
+
+    texCoordVarying = texcoord;
+    vHeight = height;
+}
+
+```
+
+## NOVENO EJEMPLO
+
+![alt text](image-15.png)
+
+Este difumina dependiendo de la posición del mouse
