@@ -230,6 +230,126 @@ void main()
 
 Este se encarga del color que se ve en la pantalla dependiendo de la posición del mouse, osea, genera un cambio de color que se ve en la pantalla cuando movemos el mouse de un lado a otro o de arriba hacia abajo.
 
-## ACTIVIDAD 3
+# ACTIVIDAD 3
 
-## ACTIVIDAD 4
+### ¿Qué es un uniform?
+
+Un uniform es una variable que le manda información al shader desde el programa principal, como por ejemplo el color o el tiempo. Esa información no cambia mientras se dibuja, así que el shader usa el mismo valor para todos los puntos o píxeles del dibujo. Sirve para que el shader sepa cosas del programa y pueda hacer efectos como animaciones o cambios de color.
+
+## CUARTO EJEMPLO
+
+![alt text](image-4.png)
+
+### ¿Cómo funciona el código de aplicación, los shaders y cómo se comunican estos?
+el programa principal crea una imagen y un plano para mostrarla, y usa un shader para cambiar cómo se ve. El vertex shader se encarga de mover los puntos (vértices) del plano y también de cambiar las coordenadas de la textura usando la posición del mouse. Luego, le pasa esa información al fragment shader, que se encarga de pintar cada píxel de la imagen en pantalla usando esas coordenadas.
+
+Estos se comunican por medio de uniforms, que sirven para enviar datos, como la posición del mouse o el tamaño de la pantalla, al shader. Así, cuando movemos el mouse, el shader recibe ese valor y hace que la textura se desplace, creando un efecto visual en tiempo real. En el caso de este ejemplo es una imagen grande que se puede ver sisigo moviendo el mouse
+
+## MODIFICACION
+![alt text](image-5.png)
+
+Solo modifique el fragment shader
+
+```cpp
+OF_GLSL_SHADER_HEADER
+
+uniform sampler2D tex0;     // textura que viene de la app
+uniform vec2 resolution;    // tamaño de pantalla
+in vec2 texCoordVarying;    // coordenadas de textura del vertex shader
+
+out vec4 outputColor;
+
+void main() {
+    // tomamos el color original de la textura
+    vec4 color = texture(tex0, texCoordVarying / resolution);
+
+    // modificamos los colores (por ejemplo, invertimos o mezclamos tonos)
+    color.rgb = vec3(1.0 - color.r, color.g * 0.8, color.b + 0.1);
+
+    // aseguramos que los valores no se salgan del rango
+    color.rgb = clamp(color.rgb, 0.0, 1.0);
+
+    // enviamos el color modificado al píxel
+    outputColor = color;
+}
+
+```
+
+## QUINTO EJEMPLO
+
+![alt text](image-6.png)
+
+### ¿Cómo funciona el código de aplicación, los shaders y cómo se comunican estos?
+
+Funciona igual que el anterior ejemplo, solo que  esta vez se usa un uniform demas para decirle al programa que use la mask para darle efecto a la imagen.
+
+### MODIFICACION
+
+![alt text](image-7.png)
+
+```cpp
+OF_GLSL_SHADER_HEADER
+
+uniform sampler2D tex0;
+uniform sampler2D imageMask;
+
+in vec2 texCoordVarying;
+out vec4 outputColor;
+
+void main()
+{
+    vec4 texel0 = texture(tex0, texCoordVarying);
+    vec4 texel1 = texture(imageMask, texCoordVarying);
+    float alpha = texel0.a * texel1.a;
+
+    // Aumenta el contraste y la saturación de los colores
+    vec3 color = texel0.rgb;
+    color = pow(color, vec3(0.5));  // hace los colores más vivos
+    color = color * vec3(1.2, 1.1, 1.3);
+
+    outputColor = vec4(color, alpha);
+}
+
+```
+
+## SEXTO EJEMPLO
+
+![alt text](image-8.png)
+
+### ¿Cómo funciona el código de aplicación, los shaders y cómo se comunican estos?
+
+El código hace que la aplicación use tres imágenes o videos (una de la cámara, una imagen y un video) y una máscara para mezclarlos con ayuda de un shader. El vertex shader pasa la posición y coordenadas de textura de cada punto, y el fragment shader decide el color final de cada píxel mezclando los colores según la máscara. Así, la app y los shaders trabajan juntos: la app envía las texturas al shader y el shader calcula cómo se combinan para mostrar la imagen final.
+
+### MODIFICACION
+
+![alt text](image-9.png)
+
+```cpp
+
+OF_GLSL_SHADER_HEADER
+
+uniform sampler2D tex0;
+uniform sampler2D imageMask;
+
+in vec2 texCoordVarying;
+
+out vec4 outputColor;
+
+void main()
+{
+    vec4 texel0 = texture(tex0, texCoordVarying);
+    vec4 texel1 = texture(imageMask, texCoordVarying);
+
+    // Efecto neón: mezcla colores usando seno y coseno de las coordenadas
+    float r = abs(sin(texCoordVarying.x * 10.0));
+    float g = abs(cos(texCoordVarying.y * 10.0));
+    float b = abs(sin((texCoordVarying.x + texCoordVarying.y) * 5.0));
+
+    // Combinar con la imagen original
+    vec3 neonColor = mix(texel0.rgb, vec3(r, g, b), 0.5);
+
+    // Mantener la transparencia con la máscara
+    outputColor = vec4(neonColor, texel0.a * texel1.a);
+}
+```
+# ACTIVIDAD 4
