@@ -1,6 +1,6 @@
 # INVESTIGACIÓN
 
-## ACTIVIDAD 1
+# ACTIVIDAD 1
 
 ### ¿Qué son los vértices?
 Los vértices son puntos que marcan la forma de un objeto 3D. Cada vértice tiene una posición en el espacio (x, y, z) y puede tener información adicional como color o coordenadas de textura. Al conectar varios vértices se crean los triángulos que forman el modelo.
@@ -58,14 +58,14 @@ La GPU debe ser rápida y trabajar en paralelo porque necesita procesar millones
 
 Cumplen su proposito de dar a entender como funciona una GPU y CPU, pero de igual manera los videos de aprendizaje son en su mayoría aburridos, asi que no.
 
-## ACTIVIDAD 2
+# ACTIVIDAD 2
+
+## PRIMER EJEMPLO
+
 ### Con la modificación del codigo
 ![alt text](image.png)
 
-Este mo funciona porque no llama a las funciones que inician y finalizan el shader
-### Codigo original sin modificar
-
-![alt text](image-1.png)
+Este mo funciona porque no llama a las funciones que inician y finalizan el shader.
 
 ### ¿Cómo funciona?
 
@@ -73,9 +73,7 @@ El programa carga un shader (un pequeño programa que corre en la tarjeta gráfi
 
 ### ¿Qué resultados obtuviste?
 
-Depende del shader que esté en la carpeta shadersGL3/shader.
-Por ejemplo, puede mostrar colores, degradados o efectos visuales (como distorsión o movimiento).
-En este caso, el resultado visual lo decide el código del shader, no el de ofApp.cpp.
+![alt text](image-1.png)
 
 ### ¿Estás usando un vertex shader?
 
@@ -89,7 +87,7 @@ Ahí es donde se crean los efectos visuales (luces, sombras, colores, texturas, 
 
 ### Analiza el código de los shaders. ¿Qué hace cada uno?
 
-#### SHADER.VERT
+#### SHADER.VERT (VERTEX SHADER)
 
 ```cpp
 OF_GLSL_SHADER_HEADER
@@ -103,7 +101,134 @@ void main(){
 }
 
 ```
+Se encarga de manejar los vértices del rectángulo que se dibuja en pantalla. En este caso, el código toma la posición de cada vértice y la multiplica por una matriz llamada modelViewProjectionMatrix. Esa matriz se usa para colocar correctamente el rectángulo dentro de la ventana, teniendo en cuenta la cámara y la proyección. En pocas palabras, este shader solo calcula dónde va cada punto del rectángulo para que se vea bien en la pantalla.
 
+#### SHADER.FRAG (FRAGMENT SHADER)
+
+```cpp
+OF_GLSL_SHADER_HEADER
+
+out vec4 outputColor;
+
+void main()
+{
+    // gl_FragCoord contains the window relative coordinate for the fragment.
+    // we use gl_FragCoord.x position to control the red color value.
+    // we use gl_FragCoord.y position to control the green color value.
+    // please note that all r, g, b, a values are between 0 and 1.
+    
+    float windowWidth = 1024.0;
+    float windowHeight = 768.0;
+    
+	float r = gl_FragCoord.x / windowWidth;
+	float g = gl_FragCoord.y / windowHeight;
+	float b = 1.0;
+	float a = 1.0;
+	outputColor = vec4(r, g, b, a);
+}
+
+```
+
+Se encarga del color de cada pixel del rectángulo. En este programa, se usa la posición del pixel en la pantalla para decidir su color. El valor de gl_FragCoord.x se usa para controlar el color rojo, y el valor de gl_FragCoord.y controla el color verde. Además, el color azul siempre está al máximo. Esto hace que se forme un degradado de colores que cambia según la posición del pixel.
+
+## SEGUNDO EJEMPLO (a partir de aqui va a hacer todo mas rapido por cuestiones de tiempo :d)
+
+### COMO FUNCIONA
+
+El programa funciona dibujando un plano en el centro de la pantalla y aplicándole un shader para que tenga efectos visuales. Cuando muevo el mouse de un lado a otro, el color del plano cambia entre magenta y cian. Si lo muevo hacia arriba o hacia abajo, el plano se inclina, como si se moviera en 3D. Además, el programa le pasa al shader el tiempo que va corriendo, así que puede usarlo para hacer animaciones o efectos que se mueven con el tiempo.
+
+### ¿Que resultados obtuviste?
+
+![alt text](image-2.png)
+
+### ¿Se usa un vertex shader?
+
+Sí, se está usando un vertex shader. Ese shader se encarga de manejar los vértices del plano, o sea, los puntos que forman la figura. Aunque no se ve directamente en este código, el programa le envía datos como el tiempo, y eso normalmente se usa en el vertex shader para mover o animar la forma del plano. Básicamente, controla cómo se deforma o se mueve la figura.
+
+### ¿Se usa un fragment shader?
+
+Es el que pinta los colores del plano. El programa mezcla los colores magenta y cian según la posición del mouse, y ese color se pasa al shader para aplicarlo. En pocas palabras, el fragment shader decide cómo se ve cada parte del plano en pantalla, es decir, su color y brillo.
+
+### EXPLICACION CODIGOS SHADER
+
+#### SHADER.VERT (VERTEX SHADER)
+
+Este shader hace que el plano se mueva como una ola, usando una función que depende del tiempo para subir y bajar los vértices en el eje Y, creando un efecto de movimiento animado en la superficie.
+
+#### SHADER.FRAG (FRAGMENT SHADER)
+
+Este shader pinta el plano con el color que le envía el programa principal, usando la variable globalColor para darle ese color a toda la superficie.
+
+## TERCER EJEMPLO
+
+### COMO FUNCIONA
+
+El programa dibuja una cuadricula que resalta con una especie de circulo o esfera, donde al mover el mouse esta esfera se mueve con el, y dependiendo del lado que se este cambia de color.
+
+### ¿Que resultados obtuviste?
+
+![alt text](image-3.png)
+
+### ¿Se usa un vertex shader?
+
+Si, este se encarga de darle esa deformación al plano
+
+### ¿Se usa un fragment shader?
+
+Este es el que se encarga del color dependiendo de la posición del mouse.
+
+### EXPLICACIÓN CODIGOS SHADER
+
+### SHADER.VERT
+
+Como se dijo anteriormente, este es el shader que se encarga de deformar el plano usando el cursor. Solo hace eso
+
+```cpp
+OF_GLSL_SHADER_HEADER
+
+// these are for the programmable pipeline system
+uniform mat4 modelViewProjectionMatrix;
+in vec4 position;
+
+uniform float mouseRange;
+uniform vec2 mousePos;
+uniform vec4 mouseColor;
+
+void main()
+{
+    // copy position so we can work with it.
+    vec4 pos = position;
+    
+    // direction vector from mouse position to vertex position.
+	vec2 dir = pos.xy - mousePos;
+    
+    // distance between the mouse position and vertex position.
+	float dist =  sqrt(dir.x * dir.x + dir.y * dir.y);
+    
+    // check vertex is within mouse range.
+	if(dist > 0.0 && dist < mouseRange) {
+		
+		// normalise distance between 0 and 1.
+		float distNorm = dist / mouseRange;
+        
+		// flip it so the closer we are the greater the repulsion.
+		distNorm = 1.0 - distNorm;
+		
+        // make the direction vector magnitude fade out the further it gets from mouse position.
+        dir *= distNorm;
+        
+		// add the direction vector to the vertex position.
+		pos.x += dir.x;
+		pos.y += dir.y;
+	}
+
+	// finally set the pos to be that actual position rendered
+	gl_Position = modelViewProjectionMatrix * pos;
+}
+```
+#### SHADER.FRAG
+
+Este se encarga del color que se ve en la pantalla dependiendo de la posición del mouse, osea, genera un cambio de color que se ve en la pantalla cuando movemos el mouse de un lado a otro o de arriba hacia abajo.
 
 ## ACTIVIDAD 3
 
