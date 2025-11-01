@@ -354,6 +354,11 @@ void main()
 ```
 # ACTIVIDAD 4
 
+### ¿Qué hace el código del ejemplo?
+
+El código del ejemplo muestra una imagen que se mueve dependiendo de dónde esté el mouse. Cuando el usuario mueve el mouse, la imagen cambia de posición en la pantalla, creando un efecto visual interactivo. En pocas palabras, el programa usa shaders para que la imagen reaccione al movimiento del mouse en tiempo real, haciendo que se vea más dinámica y llamativa.
+
+
 ### ¿Cómo funciona el código de aplicación, los shaders y cómo se comunican estos? (IGUAL PARA LOS EJEMPLOS SIGUIENTES)
 
 El código de aplicación se encarga de controlar la lógica del programa, como cargar las imágenes, texturas y enviar información a los shaders. Los shaders son el vertex shader que controla la forma y posición de los objetos, y el fragment shader se encarga del color de cada píxel. Ambos se comunican con el código mediante los uniforms, por ejemplo, texturas o valores numéricos. Así, el código principal da los datos y los shaders crean los efectos visuales en pantalla.
@@ -510,4 +515,189 @@ void main()
 
 ![alt text](image-15.png)
 
-Este difumina dependiendo de la posición del mouse
+Este difumina dependiendo de la posición del mouse, le agrega un blur a la imagen dependiendo de la posición del mouse
+
+### MODIFICACIONES
+
+<video controls src="20251101-1719-31.5232312.mp4" title="Title"></video>
+
+En el ofapp.cpp, se le agrego mas dinamismo al blur y que este tenga un pulso cada cierto tiempo
+
+```cpp
+#include "ofApp.h"
+
+//--------------------------------------------------------------
+void ofApp::setup() {
+	ofDisableArbTex();
+	if (ofIsGLProgrammableRenderer()) {
+		shaderBlurX.load("shadersGL3/shaderBlurX");
+		shaderBlurY.load("shadersGL3/shaderBlurY");
+	}
+	else {
+		shaderBlurX.load("shadersGL2/shaderBlurX");
+		shaderBlurY.load("shadersGL2/shaderBlurY");
+	}
+
+	image.load("img.jpg");
+
+	fboBlurOnePass.allocate(image.getWidth(), image.getHeight());
+	fboBlurTwoPass.allocate(image.getWidth(), image.getHeight());
+	ofSetFrameRate(60);
+	ofEnableAlphaBlending();
+}
+
+//--------------------------------------------------------------
+void ofApp::update() {
+
+}
+
+//--------------------------------------------------------------
+void ofApp::draw() {
+	float blur = ofMap(mouseX, 0, ofGetWidth(), 0, 5, true);
+	float colorShift = ofMap(mouseY, 0, ofGetHeight(), 0.0, 1.0, true);
+	float timePulse = (sin(ofGetElapsedTimef() * 2.0) + 1.0) * 0.5; // efecto respiración
+
+	//----------------------------------------------------------
+	fboBlurOnePass.begin();
+	shaderBlurX.begin();
+	shaderBlurX.setUniform1f("blurAmnt", blur);
+	shaderBlurX.setUniform1f("texwidth", image.getWidth());
+	shaderBlurX.setUniform1f("timePulse", timePulse);
+	shaderBlurX.setUniform1f("colorShift", colorShift);
+
+	image.draw(0, 0);
+
+	shaderBlurX.end();
+	fboBlurOnePass.end();
+
+	//----------------------------------------------------------
+	fboBlurTwoPass.begin();
+	shaderBlurY.begin();
+	shaderBlurY.setUniform1f("blurAmnt", blur);
+	shaderBlurY.setUniform1f("texheight", image.getHeight());
+	shaderBlurY.setUniform1f("timePulse", timePulse);
+	shaderBlurY.setUniform1f("colorShift", colorShift);
+
+	fboBlurOnePass.draw(0, 0);
+
+	shaderBlurY.end();
+	fboBlurTwoPass.end();
+
+	//----------------------------------------------------------
+	ofSetColor(255);
+	fboBlurTwoPass.draw(0, 0);
+}
+
+//--------------------------------------------------------------
+void ofApp::keyPressed(int key){
+	
+}
+
+//--------------------------------------------------------------
+void ofApp::keyReleased(int key){
+
+}
+
+//--------------------------------------------------------------
+void ofApp::mouseMoved(int x, int y){
+	
+}
+
+//--------------------------------------------------------------
+void ofApp::mouseDragged(int x, int y, int button){
+
+}
+
+//--------------------------------------------------------------
+void ofApp::mousePressed(int x, int y, int button){
+
+}
+
+//--------------------------------------------------------------
+void ofApp::mouseReleased(int x, int y, int button){
+
+}
+
+//--------------------------------------------------------------
+void ofApp::windowResized(int w, int h){
+
+}
+
+//--------------------------------------------------------------
+void ofApp::gotMessage(ofMessage msg){
+
+}
+
+//--------------------------------------------------------------
+void ofApp::dragEvent(ofDragInfo dragInfo){ 
+
+}
+
+```
+
+En el shaderBlurX se hicieron modificaciones para hacerlo mas suave, coloreado y animado, agregandole como una especie de pulso de vida dentro del blur.
+
+```cpp
+OF_GLSL_SHADER_HEADER
+
+uniform sampler2D tex0;
+uniform float blurAmnt;
+uniform float texwidth;
+uniform float timePulse;
+uniform float colorShift;
+
+in vec2 texCoordVarying;
+out vec4 outputColor;
+
+void main()
+{
+	vec4 color = vec4(0.0);
+	for(int i = -4; i <= 4; i++){
+		float weight = exp(-float(i*i) / 8.0);
+		color += texture(tex0, texCoordVarying + vec2(blurAmnt * float(i) / texwidth, 0.0)) * weight;
+	}
+	color /= 2.0;
+
+	// agregar tinte dinámico
+	vec3 tint = vec3(0.8 + 0.2 * sin(timePulse * 6.2831),
+					 0.6 + colorShift * 0.4,
+					 1.0 - colorShift * 0.5);
+	color.rgb *= tint;
+
+	outputColor = color;
+}
+
+```
+
+En el shaderBlurY se le agrego profundidad con una viñeta y tambien mantener el color dinamico
+
+```cpp
+OF_GLSL_SHADER_HEADER
+
+uniform sampler2D tex0;
+uniform float blurAmnt;
+uniform float texwidth;
+uniform float timePulse;
+uniform float colorShift;
+
+in vec2 texCoordVarying;
+out vec4 outputColor;
+
+void main()
+{
+	vec4 color = vec4(0.0);
+	for(int i = -4; i <= 4; i++){
+		float weight = exp(-float(i*i) / 8.0);
+		color += texture(tex0, texCoordVarying + vec2(blurAmnt * float(i) / texwidth, 0.0)) * weight;
+	}
+	color /= 2.0;
+
+	// agregar tinte dinámico
+	vec3 tint = vec3(0.8 + 0.2 * sin(timePulse * 6.2831),
+					 0.6 + colorShift * 0.4,
+					 1.0 - colorShift * 0.5);
+	color.rgb *= tint;
+
+	outputColor = color;
+}
+```
