@@ -1,0 +1,256 @@
+## RETO 1
+````
+int i = 1;
+int sum = 0;
+While (i <= 100){
+   sum += i;
+   i++;
+}
+````
+### ¿Cómo están implementadas las variables i y sum?
+Como variables enteras (int), esto quiere decir que oueden almacenar numeros enteros y estos mismos se almacenan en la ram cuando el programa se ejecute
+
+### ¿En qué direcciones de memoria están estas variables?
+Al estar ubicadas en la memoria ram, y no parecen tener una dirección ya establecida, podriamos decir que las variables i y sum estan ubicados en la RAM[16] y en
+la RAM[17].
+
+### ¿Cómo está implementado el ciclo while?
+El ciclo while, esta implementado como un ensamblador que evaluan si i <= 1000, si es verdadera, ejecutan { sum += i; i++; } donde luego saltan a reevaluar la condición y si es falsa
+el ciclo termina para continuar con el resto del programa.
+
+### ¿Cómo se implementa la variable i?
+Esta variable se implementa o ejecuta a traves de su direccion de memoria para que el compilador pueda gestionar este espacio cuando se ejecuta la función que contiene a i.
+
+###  ¿En qué parte de la memoria se almacena la variable i?
+Al estar dentro de una funcion como main() esta variable se guarda en el stack.
+
+### Después de todo lo que has hecho, ¿Qué es entonces una variable?
+Es un nombre simbolico que se usa para referirse a una ubicación de la memoria donde se almacena un dato durante la ejecución del programa-
+
+### ¿Qué es la dirección de una variable?
+Es La posición en memoria RAM donde se encuentra almacenado el valor de la variable.
+
+### ¿Qué es el contenido de una variable?
+Es el valor almacenado en la dirección de memoria de la variable.
+
+### RAE2
+Este codigo con toda sinceridad lo probe en varios editores de c++ en los cuales siempre daba error, pero esto se debe a que no tiene un print en el cual muestre el resultado de este
+codigo, ya que este mismo busca mediante un ciclo sumar los numeros del 1 al 100, al meterlo en Chatgpt, este hizo el print y mostro el resultado de esta suma que es 5050. En este caso
+no fue necesario probar el codigo por partes, ya que al ser tan corto podriamos probarlo completo de una vez.
+
+![alt text](image.png)
+
+![alt text](image-5.png)
+
+## RETO 2
+### RAE1
+Transforma el programa en alto nivel anterior para que utilice un ciclo for en vez de un ciclo while.
+````
+int sum = 0;
+for (int i = 1; i <= 100; i++)
+{
+    sum += i;
+}
+````
+### RAE2
+Este codigo es el mismo que el anterior, solo cambiamos el ciclo while por un for, por lo que tienen el mismo funcionamiento y la misma respuesta.
+
+![alt text](image-2.png)
+
+## RETO 3
+### RAE1
+Escribe un programa en lenguaje ensamblador que implemente el programa anterior.
+````
+    @1
+    D=A
+    @R0     // i = 1
+    M=D
+
+    @0
+    D=A
+    @R1     // sum = 0
+    M=D
+
+    @100
+    D=A
+    @R2     // R2 = 100 (límite)
+    M=D
+
+(LOOP)
+    // if i > 100, terminar
+    @R0
+    D=M
+    @R2
+    D=D-M
+    @END
+    D;JGT   // Si i > 100, saltar a END
+
+    // sum = sum + i
+    @R0
+    D=M
+    @R1
+    M=D+M
+
+    // i++
+    @R0
+    M=M+1
+
+    @LOOP
+    0;JMP
+
+(END)
+    @END
+    0;JMP   // Bucle infinito para detener
+````
+### RAE2
+El codigo suma los numeros del 1 al 100, este mismo se ejecuta en la ROM para que el resultado sea guardado en la RAM[1], donde en la RAM[0] se muestran los numeros del 1 hacia adelante
+y en la RAM[2] se pone el numero limite que es el 100. Este codigo fue probado en el CPU emulator de nand2tetris, y puedo afirmar que funciona correctamente, al llegar al resultado 5050
+el programa se detiene.
+
+<video controls src="NAND2Tetris - Google Chrome 2025-08-05 09-08-11.mp4" title="Title"></video>
+
+## RETO 4
+````
+int a = 10;
+int *p;
+p = &a;
+*p = 20;
+````
+El programa anterior modifica el contenido de la variable a por medio de la variable p. p es un puntero porque almacena la dirección de memoria de la variable a. En este caso el valor de la variable a será 20 luego de ejecutar *p = 20;. Ahora analiza:
+
+### ¿Cómo se declara un puntero en C++? 
+int *p;. p es una variable que almacenará la dirección de un variable que almacena enteros.
+
+### ¿Cómo se define un puntero en C++? 
+p = &a;. Definir el puntero es inicializar el valor del puntero, es decir, guardar la dirección de una variable. En este caso p contendrá la dirección de a.
+
+### ¿Cómo se almacena en C++ la dirección de memoria de una variable? 
+Con el operador &. p = &a;
+
+### ¿Cómo se escribe el contenido de la variable a la que apunta un puntero? 
+Con el operador . p = 20;. En este caso como p contiene la dirección de a entonces p a la izquierda del igual indica que quieres actualizar el valor de la variable a.
+
+## RETO 5
+Traducir a lenguaje ensamblador
+````
+int a = 10;
+int *p;
+p = &a;
+*p = 20;
+````
+TRADUCIDO
+````
+@10
+D=A
+@var1
+M=D
+
+@var
+D=A
+@punt
+M=D
+
+@20
+D=A
+@punt
+A=M
+M=D
+````
+## RETO 6
+Ahora vas a usar un puntero para leer la posición de memoria a la que este apunta, es decir, vas a leer por medio del puntero la variable cuya dirección está almacenada en él.
+````
+int a = 10;
+int b = 5;
+int *p;
+p = &a;
+b = *p;
+````
+En este caso b = *p; hace que el valor de b cambie de 5 a 10 porque p apunta a la la variable a y con *p a la derecha del igual estás leyendo el contenido de la variable apuntada.
+
+## RETO 7
+Traducir esto a lenguaje ensamblador
+````
+int var = 10;
+int bis = 5;
+int *p_var;
+p_var = &var;
+bis = *p_var;
+````
+Traducido
+````
+@10
+D=A
+@var
+M=D
+
+@5
+D=A
+@bis
+M=D
+
+@var
+D=A
+@pvar
+M=D
+@bis
+M=D    
+````
+## RETO 8
+### ¿Qué hace esto int *pvar;?
+Declara un puntero a entero llamado pvar.
+
+### ¿Qué hace esto pvar = var;?
+No hace nada creo, que yo me acuerde en los codigos anteriores no estaba copiado asi exactamente, falta el & en el var, osea quedaria pvar = &var.
+
+### ¿Qué hace esto var2 = *pvar?
+Asigna el valor de var2 al contenido que apunta pvar.
+
+### ¿Qué hace esto pvar = &var3?
+Me imagino que asigna a pvar el valor o la direccion de memoria de var3.
+
+## RETO 9
+Considera que el punto de entrada del siguiente programa es la función main, es decir, el programa inicia llamando la función main. Vas a proponer una posible traducción a lenguaje ensamblador de la función suma, cómo llamar a suma y cómo regresar a std::cout << "El valor de c es: " << c << std::endl; una vez suma termine.
+### RAE1
+````
+#include <iostream>
+
+int suma(int a, int b) {
+   int var = a + b;
+   return var;
+}
+
+
+int main() {
+   int c = suma(6, 9);
+   std::cout << "El valor de c es: " << c << std::endl;
+   return 0;
+}
+````
+#### TRADUCIDO
+````
+@6
+D=A
+@9
+D=D+A
+@var
+M=D
+@var
+D=M
+@SCREEN
+M=D
+(END)
+@END
+0;JMP
+````
+#### RAE2
+El codigo fue probado en nand2tetris. suma de igual manera el 6 y el 9 solo que este lo hace con registros en vez de usar una consola.
+
+![alt text](image-3.png)
+
+![alt text](image-4.png)
+
+
+
+
+
+
